@@ -533,16 +533,15 @@ const PreviewRenderer = ({
 			case 'email':
 			case 'phone':
 			case 'number':
-				return (
-					<TextInput
-						key={key}
-						type={component.type === 'text-input' ? 'text' : component.type}
-						placeholder={component.placeholder}
-						validation={component.validation}
-						min={component.min || 0}
-						max={component.max || 10000}
-					/>
-				);
+				return null;
+				// <TextInput
+				// 	key={key}
+				// 	type={component.type === 'text-input' ? 'text' : component.type}
+				// 	placeholder={component.placeholder}
+				// 	validation={component.validation}
+				// 	min={component.min || 0}
+				// 	max={component.max || 10000}
+				// />
 
 			case 'textarea':
 				return <Textarea placeholder={component.placeholder} />;
