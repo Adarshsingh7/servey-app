@@ -60,9 +60,7 @@ const CanvasWorkspace: React.FC<CanvasWorkspaceProps> = ({
 						<Button
 							variant='outline'
 							size='sm'
-							// iconName='Eye'
-							// iconPosition='left'
-							// iconSize={16}
+							onClick={() => window.open('/preview?id=preview_id', '_blank')}
 							className='hidden lg:flex'
 						>
 							Preview

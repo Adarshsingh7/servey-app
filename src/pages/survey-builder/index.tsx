@@ -1,7 +1,6 @@
 import { useState } from 'react';
 import ComponentPalette from './components/ComponentPalette';
 import CanvasWorkspace from './components/CanvasWorkspace';
-import LivePreviewPanel from './components/LivePreviewPanel';
 import FloatingToolbar from './components/FloatingToolbar';
 import PropertyPanel from './components/PropertyPanel';
 import Icon from '../../components/AppIcon';
