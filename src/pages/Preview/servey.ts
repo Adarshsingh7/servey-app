@@ -1,5 +1,5 @@
-const demoSurvey: SavedSurvey = {
-	id: 'demo-survey',
+const demoSurvey: SurveyType = {
+	_id: 'demo-survey',
 	title: 'Customer Satisfaction Survey',
 	description:
 		'Help us improve our service by sharing your feedback. This should only take 2-3 minutes.',

@@ -2,7 +2,7 @@ import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import SurveyBuilder from './pages/survey-builder';
 import { useMemo } from 'react';
 import Preview from './pages/Preview';
-import { demoSurvey } from './pages/Preview/servey';
+import { Toaster } from '@/components/ui/sonner';
 
 const router = createBrowserRouter([
 	{
@@ -13,8 +13,8 @@ const router = createBrowserRouter([
 				element: <SurveyBuilder />,
 			},
 			{
-				path: '/preview',
-				element: <Preview survey={demoSurvey} />,
+				path: '/preview/:id',
+				element: <Preview />,
 			},
 		],
 	},
@@ -23,6 +23,14 @@ const router = createBrowserRouter([
 function App() {
 	const routerProvider = useMemo(() => <RouterProvider router={router} />, []);
 
-	return <div>{routerProvider}</div>;
+	return (
+		<div>
+			<Toaster
+				richColors
+				theme='light'
+			/>
+			{routerProvider}
+		</div>
+	);
 }
 export default App;

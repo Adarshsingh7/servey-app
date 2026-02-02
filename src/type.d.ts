@@ -25,10 +25,10 @@ type SurveyComponentType =
 
 type TextValidation = 'email' | 'number' | 'phone' | 'url' | 'none';
 
-interface SavedSurvey {
+interface SurveyType {
 	title: string;
 	description: string;
-	id: string;
+	_id?: string;
 	components: SurveyComponent[];
 }
 

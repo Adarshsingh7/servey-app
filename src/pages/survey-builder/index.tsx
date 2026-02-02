@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import ComponentPalette from './components/ComponentPalette';
 import CanvasWorkspace from './components/CanvasWorkspace';
 import FloatingToolbar from './components/FloatingToolbar';
@@ -6,62 +6,17 @@ import PropertyPanel from './components/PropertyPanel';
 import Icon from '../../components/AppIcon';
 import { Button } from '../../components/ui/button';
 import Preview from '../Preview';
-import { demoSurvey } from '../Preview/servey';
 import TestModePreviewWrapper from '../Preview/TestModePreviewWrapper';
+import surveyApi from '@/utils/survey.feature';
+import { toast } from 'sonner';
 
-const SurveyBuilder = () => {
-	const savedSurvey: SavedSurvey = {
-		title: 'Customer Satisfaction Survey',
-		id: '#si345bjyka34',
-		description: 'Help us improve our services by sharing your feedback',
-		components: [
-			{
-				id: 'comp-1',
-				type: 'text-input',
-				name: 'Text Input',
-				icon: 'Type',
-				min: 3,
-				max: 100,
-				validation: 'none',
-				label: 'What is your full name?',
-				description: 'Please enter your first and last name',
-				required: false,
-				placeholder: 'John Doe',
-			},
-			{
-				id: 'comp-2',
-				type: 'email',
-				name: 'Email',
-				icon: 'Mail',
-				min: 3,
-				max: 100,
-				label: 'What is your email address?',
-				required: true,
-				placeholder: 'john@example.com',
-			},
-			{
-				id: 'comp-3',
-				type: 'multiple-choice',
-				name: 'Multiple Choice',
-				icon: 'Circle',
-				label: 'How satisfied are you with our service?',
-				required: true,
-				options: [
-					'Very Satisfied',
-					'Satisfied',
-					'Neutral',
-					'Dissatisfied',
-					'Very Dissatisfied',
-				],
-			},
-		],
+const SurveyBuilder = ({ surveyParam }: { surveyParam?: SurveyType }) => {
+	const savedSurvey: SurveyType = {
+		title: 'Untitled Survey',
+		description: 'Enter Survey Description Here',
+		components: [],
 	};
-
-	const [surveyTitle, setSurveyTitle] = useState(savedSurvey.title);
-	const [surveyDescription, setSurveyDescription] = useState(
-		savedSurvey.description,
-	);
-	const [components, setComponents] = useState(savedSurvey.components);
+	const [survey, setSurvey] = useState<SurveyType>(surveyParam || savedSurvey);
 	const [history, setHistory] = useState([savedSurvey.components]);
 
 	const [selectedComponent, setSelectedComponent] =
@@ -95,9 +50,10 @@ const SurveyBuilder = () => {
 				: undefined,
 		};
 
-		const newComponents = [...components];
+		const newComponents = [...survey.components];
 		newComponents?.splice(index, 0, newComponent);
-		setComponents(newComponents);
+		// setComponents(newComponents);
+		setSurvey((curr) => ({ ...curr, components: newComponents }));
 		addToHistory(newComponents);
 	};
 
@@ -118,10 +74,11 @@ const SurveyBuilder = () => {
 		componentId: string,
 		updates: Partial<SurveyComponent>,
 	): void => {
-		const newComponents = components?.map((comp) =>
+		const newComponents = survey.components?.map((comp) =>
 			comp?.id === componentId ? { ...comp, ...updates } : comp,
 		);
-		setComponents(newComponents);
+
+		setSurvey((curr) => ({ ...curr, components: newComponents }));
 		addToHistory(newComponents);
 
 		if (selectedComponent?.id === componentId) {
@@ -130,10 +87,11 @@ const SurveyBuilder = () => {
 	};
 
 	const handleDeleteComponent = (componentId: string): void => {
-		const newComponents = components?.filter(
+		const newComponents = survey.components?.filter(
 			(comp) => comp?.id !== componentId,
 		);
-		setComponents(newComponents);
+
+		setSurvey((curr) => ({ ...curr, components: newComponents }));
 		addToHistory(newComponents);
 
 		if (selectedComponent?.id === componentId) {
@@ -145,32 +103,52 @@ const SurveyBuilder = () => {
 	const handleUndo = (): void => {
 		if (historyIndex > 0) {
 			setHistoryIndex(historyIndex - 1);
-			setComponents(history?.[historyIndex - 1]);
+			setSurvey((curr) => ({
+				...curr,
+				components: history?.[historyIndex - 1],
+			}));
 		}
 	};
 
 	const handleRedo = (): void => {
 		if (historyIndex < history?.length - 1) {
 			setHistoryIndex(historyIndex + 1);
-			setComponents(history?.[historyIndex + 1]);
+			setSurvey((curr) => ({
+				...curr,
+				components: history?.[historyIndex + 1],
+			}));
 		}
 	};
 
-	const handleSave = (): void => {
+	const handleSave = async () => {
 		setIsSaving(true);
-		// later we have to update the same in database
-		localStorage.setItem(
-			`COMPONENT_DRAFT_${savedSurvey.id}`,
-			JSON.stringify(components),
-		);
-		setTimeout(() => {
+		if (survey._id) {
+			const { error, data } = await surveyApi.update(survey._id, survey);
 			setIsSaving(false);
-		}, 500);
+			if (error) return toast.error(error || '');
+			if (!data) return toast.error('no data');
+			toast.success('Survey Drafted Successfully');
+			setSurvey(data);
+		} else {
+			const { error, data } = await surveyApi.create(survey);
+			setIsSaving(false);
+			if (error) return toast.error(error);
+			if (!data) return toast.error('no data');
+			toast.success('Survey Drafted Successfully');
+			setSurvey(data);
+		}
 	};
 
 	const handleTheme = (themeSettings: unknown): void => {
 		console.log('Theme updated:', themeSettings);
 	};
+
+	useEffect(() => {
+		surveyApi.getById('69808a8757698c73140ad643').then((res) => {
+			const { data } = res;
+			if (data) setSurvey(data);
+		});
+	}, []);
 
 	return (
 		<div className='min-h-screen bg-background'>
@@ -181,15 +159,22 @@ const SurveyBuilder = () => {
 						<div className='flex-1 min-w-0'>
 							<input
 								type='text'
-								value={surveyTitle}
-								onChange={(e) => setSurveyTitle(e?.target?.value)}
+								value={survey.title}
+								onChange={(e) =>
+									setSurvey((curr) => ({ ...curr, title: e?.target?.value }))
+								}
 								className='w-full text-xl lg:text-2xl font-heading font-bold text-foreground bg-transparent border-none outline-none focus:ring-2 focus:ring-primary/20 rounded px-2 py-1 mb-2'
 								placeholder='Survey Title'
 							/>
 							<input
 								type='text'
-								value={surveyDescription}
-								onChange={(e) => setSurveyDescription(e?.target?.value)}
+								value={survey.description}
+								onChange={(e) =>
+									setSurvey((curr) => ({
+										...curr,
+										description: e?.target?.value,
+									}))
+								}
 								className='w-full text-sm lg:text-base text-muted-foreground bg-transparent border-none outline-none focus:ring-2 focus:ring-primary/20 rounded px-2 py-1'
 								placeholder='Survey Description'
 							/>
@@ -198,10 +183,6 @@ const SurveyBuilder = () => {
 							<Button
 								variant='outline'
 								size='sm'
-								// iconName='Save'
-								// iconPosition='left'
-								// iconSize={16}
-								// loading={isSaving}
 								onClick={handleSave}
 								className='flex-1 lg:flex-none'
 							>
@@ -210,9 +191,6 @@ const SurveyBuilder = () => {
 							<Button
 								variant='default'
 								size='sm'
-								// iconName='ArrowRight'
-								// iconPosition='right'
-								// iconSize={16}
 								onClick={() => navigate('/survey-settings')}
 								className='flex-1 lg:flex-none'
 							>
@@ -228,7 +206,7 @@ const SurveyBuilder = () => {
 				<div className='hidden lg:grid lg:grid-cols-[280px_1fr_400px] h-full'>
 					<ComponentPalette onDragStart={() => {}} />
 					<CanvasWorkspace
-						components={components}
+						components={survey.components}
 						selectedComponent={selectedComponent}
 						onSelectComponent={handleSelectComponent}
 						onUpdateComponent={handleUpdateComponent}
@@ -237,27 +215,15 @@ const SurveyBuilder = () => {
 						onDragOver={handleDragOver}
 					/>
 					<TestModePreviewWrapper>
-						<Preview
-							survey={{
-								components: components,
-								description: surveyDescription,
-								id: savedSurvey.id,
-								title: surveyTitle,
-							}}
-						/>
+						<Preview surveyParam={survey} />
 					</TestModePreviewWrapper>
-					{/* <LivePreviewPanel
-						components={components}
-						surveyTitle={surveyTitle}
-						surveyDescription={surveyDescription}
-					/> */}
 				</div>
 
 				{/* Mobile Layout */}
 				<div className='lg:hidden h-full'>
 					{!showMobilePreview ? (
 						<CanvasWorkspace
-							components={components}
+							components={survey.components}
 							selectedComponent={selectedComponent}
 							onSelectComponent={handleSelectComponent}
 							onUpdateComponent={handleUpdateComponent}
@@ -266,19 +232,7 @@ const SurveyBuilder = () => {
 							onDragOver={handleDragOver}
 						/>
 					) : (
-						<Preview
-							survey={{
-								components: components,
-								description: surveyDescription,
-								id: savedSurvey.id,
-								title: surveyTitle,
-							}}
-						/>
-						// <LivePreviewPanel
-						// 	components={components}
-						// 	surveyTitle={surveyTitle}
-						// 	surveyDescription={surveyDescription}
-						// />
+						<Preview surveyParam={survey} />
 					)}
 				</div>
 			</div>
@@ -299,10 +253,6 @@ const SurveyBuilder = () => {
 				<Button
 					variant={showMobilePreview ? 'outline' : 'default'}
 					size='sm'
-					// iconName='Edit3'
-					// iconPosition='left'
-					// iconSize={16}
-					// fullWidth
 					onClick={() => setShowMobilePreview(false)}
 				>
 					Build
@@ -310,10 +260,6 @@ const SurveyBuilder = () => {
 				<Button
 					variant={showMobilePreview ? 'default' : 'outline'}
 					size='sm'
-					// iconName='Eye'
-					// iconPosition='left'
-					// iconSize={16}
-					// fullWidth
 					onClick={() => setShowMobilePreview(true)}
 				>
 					Preview

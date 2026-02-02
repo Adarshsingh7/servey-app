@@ -1,5 +1,8 @@
-import React, { useState, useCallback, useMemo } from 'react';
+import { useState, useCallback, useMemo, useEffect } from 'react';
+import { useParams } from 'react-router-dom';
+
 import { Star, Upload, X } from 'lucide-react';
+import surveyApi from '@/utils/survey.feature';
 // import { TextInput } from '../survey-builder/components/LivePreviewPanel';
 
 // Field Components
@@ -671,12 +674,19 @@ export const ImageComponent = ({ component }) =>
 	) : null;
 
 // Main Renderer
-export const Preview = ({ survey }: { survey: SavedSurvey }) => {
+export const Preview = ({ surveyParam }: { surveyParam?: SurveyType }) => {
+	const [survey, setSurvey] = useState<SurveyType | null | undefined>(
+		surveyParam,
+	);
 	const [answers, setAnswers] = useState({});
 	const [errors, setErrors] = useState({});
 	const [submitted, setSubmitted] = useState(false);
+	const [loading, setLoading] = useState(false);
+	const { id } = useParams<{ id: string }>();
 
-	const handleChange = useCallback((id, value) => {
+	// const previewType = surveyParam ? 'demo' : 'live';
+
+	const handleChange = useCallback((id: string, value) => {
 		setAnswers((prev) => ({ ...prev, [id]: value }));
 		setErrors((prev) => ({ ...prev, [id]: '' }));
 	}, []);
@@ -722,6 +732,8 @@ export const Preview = ({ survey }: { survey: SavedSurvey }) => {
 	};
 
 	const isFormValid = useMemo(() => {
+		if (!survey) return false;
+
 		return survey.components
 			.filter(
 				(c) =>
@@ -737,10 +749,11 @@ export const Preview = ({ survey }: { survey: SavedSurvey }) => {
 					(!Array.isArray(value) || value.length > 0)
 				);
 			});
-	}, [answers, survey.components]);
+	}, [answers, survey]);
 
 	const handleSubmit = (e) => {
 		e.preventDefault();
+		if (!survey) return;
 
 		const newErrors = {};
 		let hasErrors = false;
@@ -824,6 +837,25 @@ export const Preview = ({ survey }: { survey: SavedSurvey }) => {
 		}
 	};
 
+	useEffect(() => {
+		if (!id) return;
+
+		const fetch = async function () {
+			setLoading(true);
+			const { success, data } = await surveyApi.getById(id);
+			setLoading(false);
+			if (success && data) {
+				setSurvey(data);
+			}
+		};
+
+		fetch();
+	}, [id]);
+
+	useEffect(() => {
+		setSurvey(surveyParam);
+	}, [surveyParam]);
+
 	if (submitted) {
 		return (
 			<div className='min-h-screen bg-slate-50 py-8 px-4'>
@@ -850,6 +882,22 @@ export const Preview = ({ survey }: { survey: SavedSurvey }) => {
 						Your response has been submitted successfully.
 					</p>
 				</div>
+			</div>
+		);
+	}
+
+	if (loading) {
+		return (
+			<div className='min-h-screen flex items-center justify-center'>
+				<p className='text-slate-500 animate-pulse'>Loading...</p>
+			</div>
+		);
+	}
+
+	if (!survey) {
+		return (
+			<div className='min-h-screen flex items-center justify-center'>
+				<p className='text-red-500'>Survey not found</p>
 			</div>
 		);
 	}
