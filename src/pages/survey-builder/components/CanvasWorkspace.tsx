@@ -4,6 +4,8 @@
 import React, { useState } from 'react';
 import Icon from '../../../components/AppIcon';
 import { Button } from '../../../components/ui/button';
+import { useQuery } from '@tanstack/react-query';
+import { surveyQueryId } from '@/queries/survey.query';
 
 interface CanvasWorkspaceProps {
 	components: SurveyComponent[];
@@ -25,6 +27,8 @@ const CanvasWorkspace: React.FC<CanvasWorkspaceProps> = ({
 	onDragOver,
 }) => {
 	const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
+
+	const { data } = useQuery(surveyQueryId('69808a8757698c73140ad643'));
 
 	const handleDrop = (e: React.DragEvent, index: number): void => {
 		e?.preventDefault();
@@ -60,7 +64,9 @@ const CanvasWorkspace: React.FC<CanvasWorkspaceProps> = ({
 						<Button
 							variant='outline'
 							size='sm'
-							onClick={() => window.open('/preview?id=preview_id', '_blank')}
+							onClick={() =>
+								window.open(`/preview/${data?.data?._id}`, '_blank')
+							}
 							className='hidden lg:flex'
 						>
 							Preview

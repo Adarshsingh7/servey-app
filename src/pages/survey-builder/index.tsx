@@ -9,6 +9,13 @@ import Preview from '../Preview';
 import TestModePreviewWrapper from '../Preview/TestModePreviewWrapper';
 import surveyApi from '@/utils/survey.feature';
 import { toast } from 'sonner';
+import {
+	QueryClient,
+	useMutation,
+	useQuery,
+	useQueryClient,
+} from '@tanstack/react-query';
+import { surveyQueryId } from '@/queries/survey.query';
 
 const SurveyBuilder = ({ surveyParam }: { surveyParam?: SurveyType }) => {
 	const savedSurvey: SurveyType = {
@@ -26,6 +33,45 @@ const SurveyBuilder = ({ surveyParam }: { surveyParam?: SurveyType }) => {
 	const [isSaving, setIsSaving] = useState<boolean>(false);
 	const [showMobilePreview, setShowMobilePreview] = useState<boolean>(false);
 	const [showPalette, setShowPalette] = useState<boolean>(false);
+
+	const queryClient = useQueryClient();
+
+	useQuery(surveyQueryId('69808a8757698c73140ad643'));
+
+	const { mutate: mutationUpdate } = useMutation({
+		mutationFn: (survey: SurveyType) => surveyApi.update(survey._id!, survey),
+		onError: (err) => {
+			console.log(err);
+			toast.error('Server Unreachable please check the logs');
+		},
+		onSuccess: (data) => {
+			if (data.error) toast.error(data.error);
+			if (!data.data) return;
+			toast.success('Survey Drafted Successfully');
+			setSurvey(data.data);
+			queryClient.invalidateQueries({ queryKey: ['survey'] });
+		},
+		onSettled: () => {
+			setIsSaving(false);
+		},
+	});
+
+	const { mutate: mutationCreate } = useMutation({
+		mutationFn: (survey: SurveyType) => surveyApi.create(survey),
+		onError: (err) => {
+			console.log(err);
+			toast.error('Server Unreachable please check the logs');
+		},
+		onSuccess: (data) => {
+			if (data.error) toast.error(data.error);
+			if (!data.data) return;
+			toast.success('Survey Drafted Successfully');
+			setSurvey(data.data);
+		},
+		onSettled: () => {
+			setIsSaving(false);
+		},
+	});
 
 	const addToHistory = (newComponents: SurveyComponent[]): void => {
 		const newHistory = history?.slice(0, historyIndex + 1);
@@ -123,19 +169,9 @@ const SurveyBuilder = ({ surveyParam }: { surveyParam?: SurveyType }) => {
 	const handleSave = async () => {
 		setIsSaving(true);
 		if (survey._id) {
-			const { error, data } = await surveyApi.update(survey._id, survey);
-			setIsSaving(false);
-			if (error) return toast.error(error || '');
-			if (!data) return toast.error('no data');
-			toast.success('Survey Drafted Successfully');
-			setSurvey(data);
+			mutationUpdate(survey);
 		} else {
-			const { error, data } = await surveyApi.create(survey);
-			setIsSaving(false);
-			if (error) return toast.error(error);
-			if (!data) return toast.error('no data');
-			toast.success('Survey Drafted Successfully');
-			setSurvey(data);
+			mutationCreate(survey);
 		}
 	};
 

@@ -49,3 +49,9 @@ interface SurveyComponent {
 	validation?: TextValidation;
 	// options: SurveyComponentOption[];
 }
+
+interface ApiResponse<T> {
+	success: boolean;
+	error: string | null;
+	data: T | null;
+}

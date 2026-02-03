@@ -9,12 +9,6 @@ export interface Question {
 	options?: string[];
 }
 
-export interface ApiResponse<T> {
-	success: boolean;
-	error: string | null;
-	data: T | null;
-}
-
 const surveyApi = {
 	create: async (survey: SurveyType): Promise<ApiResponse<SurveyType>> => {
 		try {

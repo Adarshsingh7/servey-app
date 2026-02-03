@@ -3,6 +3,15 @@ import SurveyBuilder from './pages/survey-builder';
 import { useMemo } from 'react';
 import Preview from './pages/Preview';
 import { Toaster } from '@/components/ui/sonner';
+import {
+	QueryClient,
+	QueryClientProvider,
+	useQuery,
+} from '@tanstack/react-query';
+import SuccessPage from './pages/Preview/components/SuccessPage';
+import FailurePage from './pages/Preview/components/FailurePage';
+
+const queryClient = new QueryClient();
 
 const router = createBrowserRouter([
 	{
@@ -15,6 +24,14 @@ const router = createBrowserRouter([
 			{
 				path: '/preview/:id',
 				element: <Preview />,
+			},
+			{
+				path: '/preview/:id/success',
+				element: <SuccessPage />,
+			},
+			{
+				path: '/preview/:id/failure',
+				element: <FailurePage />,
 			},
 		],
 	},
@@ -29,7 +46,9 @@ function App() {
 				richColors
 				theme='light'
 			/>
-			{routerProvider}
+			<QueryClientProvider client={queryClient}>
+				{routerProvider}
+			</QueryClientProvider>
 		</div>
 	);
 }

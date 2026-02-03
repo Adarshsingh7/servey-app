@@ -1,8 +1,11 @@
 import { useState, useCallback, useMemo, useEffect } from 'react';
-import { useParams } from 'react-router-dom';
+import { useParams, useNavigate } from 'react-router-dom';
 
 import { Star, Upload, X } from 'lucide-react';
 import surveyApi from '@/utils/survey.feature';
+import responseApi from '@/utils/response.feature';
+import { toast } from 'sonner';
+
 // import { TextInput } from '../survey-builder/components/LivePreviewPanel';
 
 // Field Components
@@ -439,7 +442,7 @@ export const YesNoField = ({ component, value, onChange, error }) => (
 );
 
 export const EmojiField = ({ component, value, onChange, error }) => {
-	const emojis = component.options || ['😢', '😕', '😐', '🙂', '😄'];
+	const emojis = ['😢', '😕', '😐', '🙂', '😄'];
 
 	return (
 		<div className='space-y-1.5'>
@@ -680,8 +683,8 @@ export const Preview = ({ surveyParam }: { surveyParam?: SurveyType }) => {
 	);
 	const [answers, setAnswers] = useState({});
 	const [errors, setErrors] = useState({});
-	const [submitted, setSubmitted] = useState(false);
 	const [loading, setLoading] = useState(false);
+	const navigate = useNavigate();
 	const { id } = useParams<{ id: string }>();
 
 	// const previewType = surveyParam ? 'demo' : 'live';
@@ -691,7 +694,7 @@ export const Preview = ({ surveyParam }: { surveyParam?: SurveyType }) => {
 		setErrors((prev) => ({ ...prev, [id]: '' }));
 	}, []);
 
-	const validateField = (component) => {
+	const validateField = (component: SurveyComponent) => {
 		const value = answers[component.id];
 
 		if (component.required) {
@@ -721,12 +724,12 @@ export const Preview = ({ surveyParam }: { surveyParam?: SurveyType }) => {
 			}
 		}
 
-		if (component.validation?.pattern && value) {
-			const regex = new RegExp(component.validation.pattern);
-			if (!regex.test(value)) {
-				return component.validation.message || 'Invalid format';
-			}
-		}
+		// if (component.validation?.pattern && value) {
+		// 	const regex = new RegExp(component.validation.pattern);
+		// 	if (!regex.test(value)) {
+		// 		return component.validation.message || 'Invalid format';
+		// 	}
+		// }
 
 		return '';
 	};
@@ -751,9 +754,9 @@ export const Preview = ({ surveyParam }: { surveyParam?: SurveyType }) => {
 			});
 	}, [answers, survey]);
 
-	const handleSubmit = (e) => {
+	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-		if (!survey) return;
+		if (!survey || !id) return;
 
 		const newErrors = {};
 		let hasErrors = false;
@@ -775,8 +778,27 @@ export const Preview = ({ surveyParam }: { surveyParam?: SurveyType }) => {
 			return;
 		}
 
-		setSubmitted(true);
-		console.log('Survey submitted:', answers);
+		const ques = Object.keys(answers);
+		const ans = Object.values(answers);
+		const components = ques.map((q, i) => ({
+			questionId: String(q),
+			answer: String(ans[i]),
+		}));
+
+		if (!components) return;
+
+		const { data, error, success } = await responseApi.create({
+			surveyId: id,
+			components,
+		});
+		if (error) {
+			toast.error(error);
+			navigate('failure');
+		}
+		if (success && data) {
+			toast.success('Response Submitted Successfully');
+			navigate('success');
+		}
 	};
 
 	const renderField = (component: SurveyComponent) => {
@@ -855,36 +877,6 @@ export const Preview = ({ surveyParam }: { surveyParam?: SurveyType }) => {
 	useEffect(() => {
 		setSurvey(surveyParam);
 	}, [surveyParam]);
-
-	if (submitted) {
-		return (
-			<div className='min-h-screen bg-slate-50 py-8 px-4'>
-				<div className='max-w-2xl mx-auto bg-white rounded-xl shadow-sm p-8 text-center'>
-					<div className='w-16 h-16 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4'>
-						<svg
-							className='w-8 h-8 text-green-600'
-							fill='none'
-							stroke='currentColor'
-							viewBox='0 0 24 24'
-						>
-							<path
-								strokeLinecap='round'
-								strokeLinejoin='round'
-								strokeWidth={2}
-								d='M5 13l4 4L19 7'
-							/>
-						</svg>
-					</div>
-					<h2 className='text-2xl font-semibold text-slate-800 mb-2'>
-						Thank you!
-					</h2>
-					<p className='text-slate-600'>
-						Your response has been submitted successfully.
-					</p>
-				</div>
-			</div>
-		);
-	}
 
 	if (loading) {
 		return (
