@@ -3,11 +3,7 @@ import SurveyBuilder from './pages/survey-builder';
 import { useMemo } from 'react';
 import Preview from './pages/Preview';
 import { Toaster } from '@/components/ui/sonner';
-import {
-	QueryClient,
-	QueryClientProvider,
-	useQuery,
-} from '@tanstack/react-query';
+import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import SuccessPage from './pages/Preview/components/SuccessPage';
 import FailurePage from './pages/Preview/components/FailurePage';
 

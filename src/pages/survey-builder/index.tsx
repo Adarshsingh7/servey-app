@@ -9,12 +9,7 @@ import Preview from '../Preview';
 import TestModePreviewWrapper from '../Preview/TestModePreviewWrapper';
 import surveyApi from '@/utils/survey.feature';
 import { toast } from 'sonner';
-import {
-	QueryClient,
-	useMutation,
-	useQuery,
-	useQueryClient,
-} from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 import { surveyQueryId } from '@/queries/survey.query';
 
 const SurveyBuilder = ({ surveyParam }: { surveyParam?: SurveyType }) => {
