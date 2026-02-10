@@ -1,6 +1,7 @@
 import axios from 'axios';
+import ApiClient from './ApiClient';
 
-const API_BASE_URL = 'http://localhost:5000/api/survey';
+const API_BASE_URL = `${import.meta.env.VITE_API_URL}/api/survey`;
 
 export interface Question {
 	id?: string;
@@ -76,4 +77,9 @@ const getErrorMessage = (error: unknown): string => {
 	return error instanceof Error ? error.message : 'An unknown error occurred';
 };
 
+const surveyApiClient = new ApiClient(
+	`${import.meta.env.VITE_API_URL}/api/survey`,
+);
+
+export { surveyApiClient };
 export default surveyApi;

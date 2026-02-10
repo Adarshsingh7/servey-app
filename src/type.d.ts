@@ -26,8 +26,11 @@ type SurveyComponentType =
 type TextValidation = 'email' | 'number' | 'phone' | 'url' | 'none';
 
 interface SurveyType {
+	authRequired: boolean;
 	title: string;
 	description: string;
+	status: 'drafted' | 'live' | 'completed';
+	user?: string;
 	_id?: string;
 	components: SurveyComponent[];
 }
@@ -48,6 +51,30 @@ interface SurveyComponent {
 	items?: string[];
 	validation?: TextValidation;
 	// options: SurveyComponentOption[];
+}
+
+interface UserType {
+	name: string;
+	email: string;
+	photo: string;
+	role: 'teacher' | 'student';
+	password: string;
+	isActive: boolean;
+	_id?: string;
+	isVerified?: boolean;
+	passwordConfirm?: string;
+	phone?: string;
+	isGoogleUser?: boolean;
+	passwordResetToken?: string;
+	passwordResetExpires?: Date;
+	passwordChangedAt?: Date;
+
+	correctPassword(
+		candidatePassword: string,
+		userPassword: string,
+	): Promise<boolean>;
+	changedPasswordAfter(JWTTimestamp: number): boolean;
+	createPasswordResetToken(): string;
 }
 
 interface ApiResponse<T> {

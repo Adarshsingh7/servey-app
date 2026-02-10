@@ -9,17 +9,24 @@ import Preview from '../Preview';
 import TestModePreviewWrapper from '../Preview/TestModePreviewWrapper';
 import surveyApi from '@/utils/survey.feature';
 import { toast } from 'sonner';
-import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import { surveyQueryId } from '@/queries/survey.query';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import { useGetSurveyBySurveyId } from '@/queries/survey.query';
+import { useNavigate, useParams } from 'react-router-dom';
+import { useGetAuthUser, userQueryAuth } from '@/queries/auth.query';
 
-const SurveyBuilder = ({ surveyParam }: { surveyParam?: SurveyType }) => {
-	const savedSurvey: SurveyType = {
-		title: 'Untitled Survey',
-		description: 'Enter Survey Description Here',
+const SurveyBuilder = () => {
+	const queryClient = useQueryClient();
+	const navigate = useNavigate();
+
+	const [survey, setSurvey] = useState<SurveyType>({
 		components: [],
-	};
-	const [survey, setSurvey] = useState<SurveyType>(surveyParam || savedSurvey);
-	const [history, setHistory] = useState([savedSurvey.components]);
+		description: 'this is test desc',
+		status: 'drafted',
+		title: 'this is test title',
+	});
+	const [history, setHistory] = useState<SurveyComponent[][]>([
+		survey.components,
+	]);
 
 	const [selectedComponent, setSelectedComponent] =
 		useState<SurveyComponent | null>(null);
@@ -29,9 +36,10 @@ const SurveyBuilder = ({ surveyParam }: { surveyParam?: SurveyType }) => {
 	const [showMobilePreview, setShowMobilePreview] = useState<boolean>(false);
 	const [showPalette, setShowPalette] = useState<boolean>(false);
 
-	const queryClient = useQueryClient();
+	const { id } = useParams<{ id: string }>();
 
-	useQuery(surveyQueryId('69808a8757698c73140ad643'));
+	const { data: currentSurvey } = useGetSurveyBySurveyId(id!);
+	const { data: authUser } = useGetAuthUser();
 
 	const { mutate: mutationUpdate } = useMutation({
 		mutationFn: (survey: SurveyType) => surveyApi.update(survey._id!, survey),
@@ -71,6 +79,7 @@ const SurveyBuilder = ({ surveyParam }: { surveyParam?: SurveyType }) => {
 	const addToHistory = (newComponents: SurveyComponent[]): void => {
 		const newHistory = history?.slice(0, historyIndex + 1);
 		newHistory?.push(newComponents);
+		console.log(newComponents);
 		setHistory(newHistory);
 		setHistoryIndex(newHistory?.length - 1);
 	};
@@ -96,10 +105,6 @@ const SurveyBuilder = ({ surveyParam }: { surveyParam?: SurveyType }) => {
 		// setComponents(newComponents);
 		setSurvey((curr) => ({ ...curr, components: newComponents }));
 		addToHistory(newComponents);
-	};
-
-	const navigate = (path: string): void => {
-		console.log(`Navigating to ${path}`);
 	};
 
 	const handleDragOver = (e: React.DragEvent<Element>): void => {
@@ -142,7 +147,7 @@ const SurveyBuilder = ({ surveyParam }: { surveyParam?: SurveyType }) => {
 	};
 
 	const handleUndo = (): void => {
-		if (historyIndex > 0) {
+		if (historyIndex > 0 && survey) {
 			setHistoryIndex(historyIndex - 1);
 			setSurvey((curr) => ({
 				...curr,
@@ -166,7 +171,7 @@ const SurveyBuilder = ({ surveyParam }: { surveyParam?: SurveyType }) => {
 		if (survey._id) {
 			mutationUpdate(survey);
 		} else {
-			mutationCreate(survey);
+			mutationCreate({ ...survey, user: authUser?.user._id });
 		}
 	};
 
@@ -175,11 +180,10 @@ const SurveyBuilder = ({ surveyParam }: { surveyParam?: SurveyType }) => {
 	};
 
 	useEffect(() => {
-		surveyApi.getById('69808a8757698c73140ad643').then((res) => {
-			const { data } = res;
-			if (data) setSurvey(data);
-		});
-	}, []);
+		if (currentSurvey?.data?.data) setSurvey(currentSurvey.data.data);
+	}, [currentSurvey]);
+
+	if (!survey) return null;
 
 	return (
 		<div className='min-h-screen bg-background'>

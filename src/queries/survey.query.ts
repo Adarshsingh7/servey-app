@@ -1,11 +1,28 @@
-import surveyApi from '@/utils/survey.feature';
+import surveyApi, { surveyApiClient } from '@/utils/survey.feature';
+import { useQuery } from '@tanstack/react-query';
 
-export const surveyQueryId = (id: string) => ({
-	queryKey: ['survey', id],
-	queryFn: () => surveyApi.getById(id),
-});
+interface ResponseType<T> {
+	status: string;
+	result: number;
+	data: T;
+}
+
+export const useGetSurveyBySurveyId = (id: string) =>
+	useQuery({
+		queryKey: ['survey', id],
+		queryFn: () => surveyApiClient.get<ResponseType<SurveyType>>(id),
+		retry: false,
+	});
 
 export const surveyQueryAll = () => ({
 	queryKey: ['survey'],
 	queryFn: () => surveyApi.getAll(),
 });
+
+export const useGetSurveyBasedOnUserId = (userId: string) => {
+	return useQuery({
+		queryKey: ['survey', userId],
+		queryFn: () =>
+			surveyApiClient.get<ResponseType<SurveyType[]>>(`/?user=${userId}`),
+	});
+};

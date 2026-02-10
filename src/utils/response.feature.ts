@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_BASE_URL = 'http://localhost:5000/api/response';
+const API_BASE_URL = `${import.meta.env.VITE_API_URL}/api/response`;
 
 export interface ResponseComponent {
 	questionId: string;

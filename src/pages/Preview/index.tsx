@@ -5,6 +5,7 @@ import { Star, Upload, X } from 'lucide-react';
 import surveyApi from '@/utils/survey.feature';
 import responseApi from '@/utils/response.feature';
 import { toast } from 'sonner';
+import { useGetSurveyBySurveyId } from '@/queries/survey.query';
 
 // import { TextInput } from '../survey-builder/components/LivePreviewPanel';
 
@@ -687,7 +688,8 @@ export const Preview = ({ surveyParam }: { surveyParam?: SurveyType }) => {
 	const navigate = useNavigate();
 	const { id } = useParams<{ id: string }>();
 
-	// const previewType = surveyParam ? 'demo' : 'live';
+	const { data } = useGetSurveyBySurveyId(id || '');
+	const fetchedSurvey = data?.data?.data;
 
 	const handleChange = useCallback((id: string, value) => {
 		setAnswers((prev) => ({ ...prev, [id]: value }));
@@ -756,7 +758,14 @@ export const Preview = ({ surveyParam }: { surveyParam?: SurveyType }) => {
 
 	const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 		e.preventDefault();
-		if (!survey || !id) return;
+		if (!survey || !id) {
+			toast.info('This Survey in development mode');
+			return;
+		}
+		if (survey.status === 'completed' || survey.status === 'drafted') {
+			toast.info('This Survey is not yet live');
+			return;
+		}
 
 		const newErrors = {};
 		let hasErrors = false;
@@ -861,18 +870,8 @@ export const Preview = ({ surveyParam }: { surveyParam?: SurveyType }) => {
 
 	useEffect(() => {
 		if (!id) return;
-
-		const fetch = async function () {
-			setLoading(true);
-			const { success, data } = await surveyApi.getById(id);
-			setLoading(false);
-			if (success && data) {
-				setSurvey(data);
-			}
-		};
-
-		fetch();
-	}, [id]);
+		if (fetchedSurvey) setSurvey(fetchedSurvey);
+	}, [fetchedSurvey, id]);
 
 	useEffect(() => {
 		setSurvey(surveyParam);

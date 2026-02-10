@@ -6,6 +6,9 @@ import { Toaster } from '@/components/ui/sonner';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import SuccessPage from './pages/Preview/components/SuccessPage';
 import FailurePage from './pages/Preview/components/FailurePage';
+import AuthScreen from './pages/login/AuthScreen';
+import Profile from './pages/profile';
+import AuthWrapper from './components/AuthWrapper';
 
 const queryClient = new QueryClient();
 
@@ -14,20 +17,52 @@ const router = createBrowserRouter([
 		path: '/',
 		children: [
 			{
+				path: '/auth',
+				element: <AuthScreen />,
+			},
+			{
 				path: '',
-				element: <SurveyBuilder />,
+				element: (
+					<AuthWrapper>
+						<Profile />
+					</AuthWrapper>
+				),
+			},
+			{
+				path: '/edit/:id',
+				element: (
+					<AuthWrapper>
+						<SurveyBuilder />
+					</AuthWrapper>
+				),
 			},
 			{
 				path: '/preview/:id',
-				element: <Preview />,
+				element: (
+					<AuthWrapper>
+						<Preview />
+					</AuthWrapper>
+				),
 			},
 			{
 				path: '/preview/:id/success',
-				element: <SuccessPage />,
+				element: (
+					<AuthWrapper>
+						<SuccessPage />
+					</AuthWrapper>
+				),
 			},
 			{
 				path: '/preview/:id/failure',
 				element: <FailurePage />,
+			},
+			{
+				path: 'profile',
+				element: (
+					<AuthWrapper>
+						<Profile />
+					</AuthWrapper>
+				),
 			},
 		],
 	},
