@@ -37,6 +37,14 @@ const router = createBrowserRouter([
 				),
 			},
 			{
+				path: '/create',
+				element: (
+					<AuthWrapper>
+						<SurveyBuilder />
+					</AuthWrapper>
+				),
+			},
+			{
 				path: '/preview/:id',
 				element: (
 					<AuthWrapper>

@@ -17,7 +17,6 @@ import {
 import { BarChart3, Edit, Eye, FileText, LogOut } from 'lucide-react';
 import { useState } from 'react';
 import { SurveySettingsDialog } from './components/SurveySettingDialog';
-import { toast } from 'sonner';
 
 function Profile() {
 	const { data } = useQuery(userQueryAuth());
@@ -88,8 +87,13 @@ function Profile() {
 		navigate('/auth');
 	};
 
+	const handleCreateSurveyDialog = function () {
+		navigate('/create');
+	};
+
 	return (
 		<div className='min-h-screen bg-background'>
+			{/* Survey Create Dialog */}
 			{/* Header */}
 			<div className='border-b border-border bg-card'>
 				<div className='max-w-7xl mx-auto px-6 py-6'>
@@ -134,14 +138,20 @@ function Profile() {
 			<div className='max-w-7xl mx-auto px-6 py-8'>
 				<div className='mb-6 flex items-center justify-between'>
 					<div>
-						<h2 className='text-2xl font-semibold text-foreground'>Surveys</h2>
+						<h2 className='text-2xl font-semibold text-foreground'>
+							Surveys ({survey.length} Total)
+						</h2>
 						<p className='text-sm text-muted-foreground mt-1'>
 							Manage and monitor your survey collection
 						</p>
 					</div>
-					<div className='text-sm text-muted-foreground'>
-						Total:{' '}
-						<span className='font-medium text-foreground'>{survey.length}</span>
+					<div className='flex gap-5 justify-center align-middle'>
+						<Button
+							variant={'outline'}
+							onClick={handleCreateSurveyDialog}
+						>
+							Create Survey
+						</Button>
 					</div>
 				</div>
 

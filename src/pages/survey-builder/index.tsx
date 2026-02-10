@@ -21,6 +21,7 @@ const SurveyBuilder = () => {
 	const [survey, setSurvey] = useState<SurveyType>({
 		components: [],
 		description: 'this is test desc',
+		authRequired: false,
 		status: 'drafted',
 		title: 'this is test title',
 	});
@@ -70,6 +71,7 @@ const SurveyBuilder = () => {
 			if (!data.data) return;
 			toast.success('Survey Drafted Successfully');
 			setSurvey(data.data);
+			navigate(`/edit/${data?.data?._id}`);
 		},
 		onSettled: () => {
 			setIsSaving(false);
@@ -180,8 +182,9 @@ const SurveyBuilder = () => {
 	};
 
 	useEffect(() => {
+		if (!id) return;
 		if (currentSurvey?.data?.data) setSurvey(currentSurvey.data.data);
-	}, [currentSurvey]);
+	}, [currentSurvey, id]);
 
 	if (!survey) return null;
 
@@ -226,7 +229,7 @@ const SurveyBuilder = () => {
 							<Button
 								variant='default'
 								size='sm'
-								onClick={() => navigate('/survey-settings')}
+								onClick={() => navigate('/profile')}
 								className='flex-1 lg:flex-none'
 							>
 								Continue

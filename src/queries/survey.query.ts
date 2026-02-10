@@ -1,5 +1,5 @@
 import surveyApi, { surveyApiClient } from '@/utils/survey.feature';
-import { useQuery } from '@tanstack/react-query';
+import { useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
 
 interface ResponseType<T> {
 	status: string;
@@ -10,7 +10,7 @@ interface ResponseType<T> {
 export const useGetSurveyBySurveyId = (id: string) =>
 	useQuery({
 		queryKey: ['survey', id],
-		queryFn: () => surveyApiClient.get<ResponseType<SurveyType>>(id),
+		queryFn: () => surveyApiClient.get<ResponseType<SurveyType>>(`/${id}`),
 		retry: false,
 	});
 

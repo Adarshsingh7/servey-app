@@ -737,7 +737,7 @@ export const Preview = ({ surveyParam }: { surveyParam?: SurveyType }) => {
 	};
 
 	const isFormValid = useMemo(() => {
-		if (!survey) return false;
+		if (!survey || !survey.components) return false;
 
 		return survey.components
 			.filter(
@@ -893,6 +893,8 @@ export const Preview = ({ surveyParam }: { surveyParam?: SurveyType }) => {
 		);
 	}
 
+	console.log(survey);
+
 	return (
 		<div className='min-h-screen bg-slate-50 py-8 px-4'>
 			<form
@@ -911,7 +913,7 @@ export const Preview = ({ surveyParam }: { surveyParam?: SurveyType }) => {
 				</div>
 
 				<div className='bg-white rounded-xl shadow-sm p-6 sm:p-8 space-y-6'>
-					{survey.components.map((component) => (
+					{survey?.components?.map((component) => (
 						<div key={component.id}>{renderField(component)}</div>
 					))}
 
