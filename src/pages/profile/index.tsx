@@ -1,7 +1,10 @@
 import { userQueryAuth } from '@/queries/auth.query';
-import { useGetSurveyBasedOnUserId } from '@/queries/survey.query';
+import {
+	useGetSurveyBasedOnUserId,
+	useUpdateSurvey,
+} from '@/queries/survey.query';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
-import { useNavigate } from 'react-router-dom';
+import { Link, useNavigate } from 'react-router-dom';
 import { Card, CardContent } from '@/components/ui/card';
 import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
@@ -29,6 +32,7 @@ function Profile() {
 
 	const { data: surveyData } = useGetSurveyBasedOnUserId(user?._id || '');
 	const survey = surveyData?.data?.data;
+	const { mutate: updateSurvey } = useUpdateSurvey();
 
 	if (!user) return null;
 	if (!survey) return null;
@@ -74,11 +78,7 @@ function Profile() {
 		surveyId: string,
 		newStatus: 'live' | 'completed',
 	) => {
-		await fetch(`/api/surveys/${surveyId}/status`, {
-			method: 'PATCH',
-			headers: { 'Content-Type': 'application/json' },
-			body: JSON.stringify({ status: newStatus }),
-		});
+		updateSurvey({ id: surveyId, body: { status: newStatus } });
 	};
 
 	const handleLogOut = function () {
@@ -95,6 +95,17 @@ function Profile() {
 		<div className='min-h-screen bg-background'>
 			{/* Survey Create Dialog */}
 			{/* Header */}
+			<header className='h-10 flex items-center bg-linear-to-r from-primary to-primary/50  justify-center border-b bg-white text-sm'>
+				<p className='text-white'>
+					Want access to Premium?{' '}
+					<Link
+						to='/pricing'
+						className='font-medium text-white hover:underline'
+					>
+						Buy now
+					</Link>
+				</p>
+			</header>
 			<div className='border-b border-border bg-card'>
 				<div className='max-w-7xl mx-auto px-6 py-6'>
 					<div className='flex items-center justify-between'>
@@ -229,7 +240,9 @@ function Profile() {
 												<Button
 													size='sm'
 													variant='outline'
-													disabled={sur.status === 'live'}
+													disabled={
+														sur.status === 'live' || sur.status === 'completed'
+													}
 													onClick={() => navigate(`/edit/${sur._id}`)}
 													className='gap-1.5'
 												>
@@ -240,6 +253,7 @@ function Profile() {
 												<Button
 													size='sm'
 													variant='outline'
+													disabled={sur.status === 'completed'}
 													onClick={() =>
 														window.open(`/preview/${sur._id}`, '_blank')
 													}

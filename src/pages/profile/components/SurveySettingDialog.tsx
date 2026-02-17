@@ -29,8 +29,11 @@ interface SurveySettingsDialogProps {
 	survey: SurveyType;
 	open: boolean;
 	onOpenChange: (open: boolean) => void;
-	onAuthToggle?: (surveyId: string, authEnabled: boolean) => void;
-	onStatusChange?: (surveyId: string, newStatus: 'live' | 'completed') => void;
+	onAuthToggle?: (surveyId: string, authEnabled: boolean) => Promise<any>;
+	onStatusChange?: (
+		surveyId: string,
+		newStatus: 'live' | 'completed',
+	) => Promise<any>;
 }
 
 export function SurveySettingsDialog({
@@ -162,7 +165,9 @@ export function SurveySettingsDialog({
 
 							<Button
 								variant='outline'
-								disabled={survey.status === 'live'}
+								disabled={
+									survey.status === 'live' || survey.status === 'completed'
+								}
 								onClick={() => {
 									navigate(`/edit/${survey._id}`);
 									onOpenChange(false);
@@ -180,6 +185,7 @@ export function SurveySettingsDialog({
 									window.open(`/preview/${survey._id}`, '_blank');
 									onOpenChange(false);
 								}}
+								disabled={survey.status === 'completed'}
 								className='flex flex-col items-center gap-2 h-auto py-4'
 							>
 								<Eye className='h-5 w-5' />

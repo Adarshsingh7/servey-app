@@ -82,3 +82,16 @@ interface ApiResponse<T> {
 	error: string | null;
 	data: T | null;
 }
+
+interface ResponseComponent {
+	_id: string;
+	questionId: string;
+	answer: string;
+}
+
+interface SurveyResponseType {
+	surveyId: Schema.Types.ObjectId;
+	_id: string;
+	createdAt: string;
+	components: [ResponseComponent];
+}

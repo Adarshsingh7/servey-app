@@ -893,8 +893,6 @@ export const Preview = ({ surveyParam }: { surveyParam?: SurveyType }) => {
 		);
 	}
 
-	console.log(survey);
-
 	return (
 		<div className='min-h-screen bg-slate-50 py-8 px-4'>
 			<form

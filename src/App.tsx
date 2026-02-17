@@ -9,6 +9,8 @@ import FailurePage from './pages/Preview/components/FailurePage';
 import AuthScreen from './pages/login/AuthScreen';
 import Profile from './pages/profile';
 import AuthWrapper from './components/AuthWrapper';
+import AnalyticsPage from './pages/analytics';
+import PricingPage from './pages/pricing';
 
 const queryClient = new QueryClient();
 
@@ -41,6 +43,22 @@ const router = createBrowserRouter([
 				element: (
 					<AuthWrapper>
 						<SurveyBuilder />
+					</AuthWrapper>
+				),
+			},
+			{
+				path: '/pricing',
+				element: (
+					<AuthWrapper>
+						<PricingPage />
+					</AuthWrapper>
+				),
+			},
+			{
+				path: '/analytics/:surveyId',
+				element: (
+					<AuthWrapper>
+						<AnalyticsPage />
 					</AuthWrapper>
 				),
 			},
