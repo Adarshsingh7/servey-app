@@ -1,3 +1,5 @@
+/** @format */
+
 import { useParams, useNavigate } from 'react-router-dom';
 import {
 	Card,
@@ -472,6 +474,8 @@ function AnalyticsPage() {
 		return resFormatted;
 	});
 
+	console.log(formattedRes);
+
 	return (
 		<div className='min-h-screen bg-background'>
 			{/* ── Top bar ── */}
@@ -652,7 +656,7 @@ function AnalyticsPage() {
 function ResRow({
 	row,
 }: {
-	row: [{ questionText: string; answerText: string }];
+	row: { questionText: string; answerText: string }[];
 }) {
 	console.log(row);
 	return (
