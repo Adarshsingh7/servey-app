@@ -69,11 +69,7 @@ const router = createBrowserRouter([
 			},
 			{
 				path: '/preview/:id/success',
-				element: (
-					<AuthWrapper>
-						<SuccessPage />
-					</AuthWrapper>
-				),
+				element: <SuccessPage />,
 			},
 			{
 				path: '/preview/:id/failure',

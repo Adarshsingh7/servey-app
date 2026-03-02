@@ -695,7 +695,7 @@ export const Preview = ({ surveyParam }: { surveyParam?: SurveyType }) => {
 	const navigate = useNavigate();
 	const { id } = useParams<{ id: string }>();
 
-	const { data } = useGetSurveyBySurveyId(id || '');
+	const { data, isFetching } = useGetSurveyBySurveyId(id || '');
 	const fetchedSurvey = data?.data?.data;
 
 	const handleChange = useCallback((id: string, value) => {
@@ -900,7 +900,7 @@ export const Preview = ({ surveyParam }: { surveyParam?: SurveyType }) => {
 		setSurvey(surveyParam);
 	}, [surveyParam]);
 
-	if (loading) {
+	if (loading || isFetching) {
 		return (
 			<div className='min-h-screen flex items-center justify-center'>
 				<p className='text-slate-500 animate-pulse'>Loading...</p>
