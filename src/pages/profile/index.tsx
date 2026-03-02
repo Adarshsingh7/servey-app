@@ -1,3 +1,5 @@
+/** @format */
+
 import { userQueryAuth } from '@/queries/auth.query';
 import {
 	useGetSurveyBasedOnUserId,
@@ -67,7 +69,7 @@ function Profile() {
 	};
 
 	const handleAuthToggle = async (surveyId: string, authEnabled: boolean) => {
-		await fetch(`/api/surveys/${surveyId}`, {
+		await fetch(`${import.meta.env.VITE_API_URL}/api/survey/${surveyId}`, {
 			method: 'PATCH',
 			headers: { 'Content-Type': 'application/json' },
 			body: JSON.stringify({ authRequired: authEnabled }),

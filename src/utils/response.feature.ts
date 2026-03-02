@@ -1,3 +1,5 @@
+/** @format */
+
 import axios from 'axios';
 
 const API_BASE_URL = `${import.meta.env.VITE_API_URL}/api/response`;
@@ -8,6 +10,7 @@ export interface ResponseComponent {
 }
 
 export interface SurveyResponseType {
+	email?: string;
 	surveyId: string;
 	components: ResponseComponent[];
 }
@@ -26,13 +29,16 @@ const responseApi = {
 			return { success: false, error: getErrorMessage(error), data: null };
 		}
 	},
-
-	getAll: async (): Promise<ApiResponse<SurveyResponseType[]>> => {
+	getAll: async (
+		params?: Record<string, string | number | boolean>,
+	): Promise<ApiResponse<SurveyResponseType[]>> => {
 		try {
 			const response = await axios.get<{
 				data: SurveyResponseType[];
 				status: string;
-			}>(API_BASE_URL);
+			}>(API_BASE_URL, {
+				params,
+			});
 			return { success: true, error: null, data: response.data.data };
 		} catch (error) {
 			return { success: false, error: getErrorMessage(error), data: null };
