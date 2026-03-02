@@ -107,14 +107,7 @@ export function SurveySettingsDialog({
 			onOpenChange={onOpenChange}
 		>
 			<DialogTrigger asChild>
-				<Button
-					size='sm'
-					variant='outline'
-					className='gap-1.5'
-				>
-					<Settings className='h-4 w-4' />
-					Settings
-				</Button>
+				<Settings className='h-4 w-4 cursor-pointer' />
 			</DialogTrigger>
 			<DialogContent className='sm:max-w-150'>
 				<DialogHeader>

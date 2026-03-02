@@ -1,11 +1,17 @@
+/** @format */
+
 import { useState, useCallback, useMemo, useEffect } from 'react';
 import { useParams, useNavigate } from 'react-router-dom';
 
 import { Star, Upload, X } from 'lucide-react';
-import surveyApi from '@/utils/survey.feature';
 import responseApi from '@/utils/response.feature';
 import { toast } from 'sonner';
 import { useGetSurveyBySurveyId } from '@/queries/survey.query';
+import { Button } from '@/components/ui/button';
+import { Input } from '@/components/ui/input';
+import { Label } from '@/components/ui/label';
+import { Mail } from 'lucide-react';
+import surveyApi from '@/utils/survey.feature';
 
 // import { TextInput } from '../survey-builder/components/LivePreviewPanel';
 
@@ -685,6 +691,7 @@ export const Preview = ({ surveyParam }: { surveyParam?: SurveyType }) => {
 	const [answers, setAnswers] = useState({});
 	const [errors, setErrors] = useState({});
 	const [loading, setLoading] = useState(false);
+	const [authReq, setAuthReq] = useState<string | null>(null);
 	const navigate = useNavigate();
 	const { id } = useParams<{ id: string }>();
 
@@ -797,6 +804,7 @@ export const Preview = ({ surveyParam }: { surveyParam?: SurveyType }) => {
 		if (!components) return;
 
 		const { data, error, success } = await responseApi.create({
+			email: authReq ?? undefined,
 			surveyId: id,
 			components,
 		});
@@ -868,6 +876,21 @@ export const Preview = ({ surveyParam }: { surveyParam?: SurveyType }) => {
 		}
 	};
 
+	async function authCurrentUser(email: string) {
+		if (!survey) return;
+		const data = await responseApi.getAll({
+			email: email,
+			surveyId: survey._id!,
+		});
+		const users = data.data;
+		if (users?.length) {
+			toast.info('email already used to fill this google form');
+			return;
+		} else {
+			setAuthReq(email);
+		}
+	}
+
 	useEffect(() => {
 		if (!id) return;
 		if (fetchedSurvey) setSurvey(fetchedSurvey);
@@ -892,6 +915,11 @@ export const Preview = ({ surveyParam }: { surveyParam?: SurveyType }) => {
 			</div>
 		);
 	}
+
+	console.log({ authRequired: survey.authRequired });
+
+	if (survey.authRequired && !authReq)
+		return <EmailGate onSubmit={authCurrentUser} />;
 
 	return (
 		<div className='min-h-screen bg-slate-50 py-8 px-4'>
@@ -929,5 +957,71 @@ export const Preview = ({ surveyParam }: { surveyParam?: SurveyType }) => {
 		</div>
 	);
 };
+
+export function EmailGate({ onSubmit }: { onSubmit: (email: string) => void }) {
+	const [email, setEmail] = useState('');
+	const [error, setError] = useState('');
+
+	const handleSubmit = () => {
+		if (!email || !/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+			setError('Please enter a valid email address.');
+			return;
+		}
+		setError('');
+		onSubmit(email);
+	};
+
+	return (
+		<div className='fixed inset-0 z-50 bg-background/80 backdrop-blur-sm flex items-center justify-center'>
+			<div className='bg-card border border-border rounded-xl shadow-lg p-8 w-full max-w-sm mx-4 flex flex-col gap-5'>
+				{/* Icon */}
+				<div className='flex items-center justify-center w-11 h-11 rounded-full bg-accent'>
+					<Mail className='w-5 h-5 text-accent-foreground' />
+				</div>
+
+				{/* Text */}
+				<div className='flex flex-col gap-1'>
+					<h2 className='text-lg font-semibold text-foreground'>
+						Enter your email
+					</h2>
+					<p className='text-sm text-muted-foreground'>
+						We need your email address to continue.
+					</p>
+				</div>
+
+				{/* Input */}
+				<div className='flex flex-col gap-1.5'>
+					<Label
+						htmlFor='email'
+						className='text-sm font-medium text-foreground'
+					>
+						Email address
+					</Label>
+					<Input
+						id='email'
+						type='email'
+						placeholder='you@example.com'
+						value={email}
+						onChange={(e) => {
+							setEmail(e.target.value);
+							if (error) setError('');
+						}}
+						onKeyDown={(e) => e.key === 'Enter' && handleSubmit()}
+						className='bg-input border-border'
+					/>
+					{error && <p className='text-xs text-destructive'>{error}</p>}
+				</div>
+
+				{/* Button */}
+				<Button
+					className='w-full bg-primary text-primary-foreground hover:bg-primary/90'
+					onClick={handleSubmit}
+				>
+					Continue
+				</Button>
+			</div>
+		</div>
+	);
+}
 
 export default Preview;

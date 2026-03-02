@@ -21,6 +21,7 @@ const SurveyBuilder = () => {
 	const [survey, setSurvey] = useState<SurveyType>({
 		components: [],
 		description: 'this is test desc',
+		_id: '',
 		authRequired: false,
 		status: 'drafted',
 		title: 'this is test title',
@@ -182,9 +183,9 @@ const SurveyBuilder = () => {
 	};
 
 	useEffect(() => {
-		if (!id) return;
-		if (currentSurvey?.data?.data) setSurvey(currentSurvey.data.data);
-	}, [currentSurvey, id]);
+		if (!id || !currentSurvey?.data?.data) return;
+		setSurvey(currentSurvey.data.data);
+	}, [currentSurvey?.data?.data, id]);
 
 	if (!survey) return null;
 

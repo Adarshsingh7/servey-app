@@ -12,6 +12,13 @@ import { Button } from '@/components/ui/button';
 import { Badge } from '@/components/ui/badge';
 import { Separator } from '@/components/ui/separator';
 import {
+	Dialog,
+	DialogContent,
+	DialogHeader,
+	DialogTitle,
+} from '@/components/ui/dialog';
+
+import {
 	Table,
 	TableBody,
 	TableCell,
@@ -25,12 +32,10 @@ import {
 	Users,
 	CalendarDays,
 	MessageSquare,
-	Clock,
-	ChevronDown,
-	ChevronUp,
 	AlertCircle,
 	RefreshCw,
 	Inbox,
+	Eye,
 } from 'lucide-react';
 import { useState } from 'react';
 import { useGetSurveyBySurveyId } from '@/queries/survey.query';
@@ -275,104 +280,37 @@ function AnswerBreakdown({
 				</CardTitle>
 			</CardHeader>
 			<CardContent className='space-y-3'>
-				{sorted.map(([answer, count]) => (
-					<div
-						key={answer}
-						className='space-y-1.5'
-					>
-						<div className='flex items-center justify-between text-sm'>
-							<span className='text-foreground'>
-								{getAnswerDisplay(answer)}
-							</span>
-							<span className='text-muted-foreground tabular-nums'>
-								{count} · {Math.round((count / answers.length) * 100)}%
-							</span>
-						</div>
-						<div className='h-2 w-full rounded-full bg-muted overflow-hidden'>
+				{sorted.map(([answer, count], i) => (
+					<>
+						{i < 3 ? (
 							<div
-								className='h-full rounded-full bg-primary transition-all duration-500'
-								style={{ width: `${(count / max) * 100}%` }}
-							/>
-						</div>
-					</div>
+								key={answer}
+								className='space-y-1.5'
+							>
+								<div className='flex items-center justify-between text-sm'>
+									<span className='text-foreground'>
+										{getAnswerDisplay(answer)}
+									</span>
+									<span className='text-muted-foreground tabular-nums'>
+										{count} · {Math.round((count / answers.length) * 100)}%
+									</span>
+								</div>
+								<div className='h-2 w-full rounded-full bg-muted overflow-hidden'>
+									<div
+										className='h-full rounded-full bg-primary transition-all duration-500'
+										style={{ width: `${(count / max) * 100}%` }}
+									/>
+								</div>
+							</div>
+						) : (
+							<span className='text-sm text-muted-foreground'>
+								+{sorted.length - 3} more answers
+							</span>
+						)}
+					</>
 				))}
 			</CardContent>
 		</Card>
-	);
-}
-
-/* ─────────────── single response row ─────────────── */
-function ResponseRow({
-	response,
-	index,
-	questionMap,
-}: {
-	response: SurveyResponseType;
-	index: number;
-	questionMap: Record<string, string>;
-}) {
-	const [expanded, setExpanded] = useState(false);
-	const components = response.components ?? [];
-	const submittedAt = response.createdAt;
-
-	return (
-		<>
-			<TableRow
-				className='cursor-pointer hover:bg-muted/40 transition-colors'
-				onClick={() => setExpanded((v) => !v)}
-			>
-				<TableCell className='py-3 font-medium text-muted-foreground tabular-nums'>
-					#{index + 1}
-				</TableCell>
-				<TableCell className='py-3 text-foreground'>
-					{components.length} {components.length === 1 ? 'answer' : 'answers'}
-				</TableCell>
-				<TableCell className='py-3 text-muted-foreground text-sm'>
-					<span className='flex items-center gap-1.5'>
-						<Clock className='h-3.5 w-3.5' />
-						{submittedAt ? formatDate(submittedAt) : 'Unknown'}
-					</span>
-				</TableCell>
-				<TableCell className='py-3 text-right'>
-					{expanded ? (
-						<ChevronUp className='h-4 w-4 text-muted-foreground ml-auto' />
-					) : (
-						<ChevronDown className='h-4 w-4 text-muted-foreground ml-auto' />
-					)}
-				</TableCell>
-			</TableRow>
-
-			{expanded && (
-				<TableRow className='bg-muted/20 hover:bg-muted/20'>
-					<TableCell
-						colSpan={4}
-						className='py-4 px-6'
-					>
-						{components.length ? (
-							<p className='text-sm text-muted-foreground italic'>
-								No answers in this response
-							</p>
-						) : (
-							<div className='grid gap-3 sm:grid-cols-2'>
-								{components.map((comp, compIdx) => (
-									<div
-										key={comp._id ?? `${index}-${compIdx}`}
-										className='rounded-lg border border-border bg-card px-4 py-3 space-y-1'
-									>
-										<p className='text-xs text-muted-foreground truncate'>
-											{questionMap[comp.questionId] ??
-												comp.questionId ??
-												'Unknown question'}
-										</p>
-										<div>{getAnswerDisplay(comp.answer)}</div>
-									</div>
-								))}
-							</div>
-						)}
-					</TableCell>
-				</TableRow>
-			)}
-		</>
 	);
 }
 
@@ -469,12 +407,11 @@ function AnalyticsPage() {
 	const formattedRes = responses.map((res) => {
 		const resFormatted = res.components.map((com) => ({
 			questionText: questionMap[com.questionId],
+			email: res.email,
 			answerText: com.answer,
 		}));
 		return resFormatted;
 	});
-
-	console.log(formattedRes);
 
 	return (
 		<div className='min-h-screen bg-background'>
@@ -612,7 +549,7 @@ function AnalyticsPage() {
 							</CardContent>
 						</Card>
 					) : (
-						<div className='border border-border rounded-lg overflow-hidden bg-card'>
+						<div className='rounded-lg border border-border bg-card overflow-hidden'>
 							<Table>
 								<TableHeader>
 									<TableRow className='bg-muted/50 hover:bg-muted/50'>
@@ -629,22 +566,16 @@ function AnalyticsPage() {
 									</TableRow>
 								</TableHeader>
 								<TableBody>
-									{sortedResponses.map((response, idx) => (
-										<ResponseRow
-											key={response._id ?? idx}
-											response={response}
+									{formattedRes.map((res, idx) => (
+										<ResRow
+											key={idx}
+											email={formattedRes[idx][0].email}
+											row={res}
 											index={idx}
-											questionMap={questionMap}
 										/>
 									))}
 								</TableBody>
 							</Table>
-							{formattedRes.map((res, idx) => (
-								<ResRow
-									key={idx}
-									row={res}
-								/>
-							))}
 						</div>
 					)}
 				</div>
@@ -655,19 +586,105 @@ function AnalyticsPage() {
 
 function ResRow({
 	row,
+	index,
+	email,
 }: {
 	row: { questionText: string; answerText: string }[];
+	email?: string;
+	index: number;
 }) {
-	console.log(row);
+	const [open, setOpen] = useState(false);
+	const PREVIEW_COUNT = 3;
+	const preview = row.slice(0, PREVIEW_COUNT);
+	const remaining = row.length - PREVIEW_COUNT;
+
 	return (
-		<div className='grid grid-cols-4 w-full'>
-			{row.map((item, i) => (
-				<div key={i}>
-					<div>{item.questionText}?</div>
-					<div>{item.answerText}</div>
-				</div>
-			))}
-		</div>
+		<>
+			<TableRow className='hover:bg-accent/40 transition-colors align-top'>
+				{/* # */}
+				<TableCell className='w-16 pt-3.5 text-sm font-medium text-muted-foreground'>
+					{index + 1}
+				</TableCell>
+
+				{/* Answers — preview only */}
+				<TableCell className='py-3 pr-4'>
+					<div className='flex items-start gap-4 flex-wrap'>
+						{preview.map((item, i) => (
+							<div
+								key={i}
+								className='flex flex-col gap-0.5 min-w-0 max-w-45'
+							>
+								<span className='text-[11px] font-semibold uppercase tracking-wide text-muted-foreground truncate'>
+									{item.questionText}
+								</span>
+								<span className='text-sm text-foreground truncate leading-snug'>
+									{item.answerText || (
+										<span className='text-muted-foreground italic text-xs'>
+											—
+										</span>
+									)}
+								</span>
+							</div>
+						))}
+						{remaining > 0 && (
+							<span className='text-xs text-muted-foreground self-center'>
+								+{remaining} more
+							</span>
+						)}
+					</div>
+				</TableCell>
+
+				{/* Submitted */}
+				<TableCell className='pt-3.5 text-sm text-muted-foreground whitespace-nowrap'>
+					{email ? email : '-'}
+				</TableCell>
+
+				{/* Action */}
+				<TableCell className='w-12 pt-2'>
+					<Button
+						variant='ghost'
+						size='icon'
+						className='h-8 w-8 text-muted-foreground hover:text-foreground hover:bg-accent'
+						onClick={() => setOpen(true)}
+					>
+						<Eye className='h-4 w-4' />
+					</Button>
+				</TableCell>
+			</TableRow>
+
+			{/* Dialog */}
+			<Dialog
+				open={open}
+				onOpenChange={setOpen}
+			>
+				<DialogContent className='max-w-2xl max-h-[80vh] flex flex-col gap-0 p-0'>
+					<DialogHeader className='px-6 py-4 border-b border-border shrink-0'>
+						<DialogTitle className='text-base font-semibold'>
+							Response #{index + 1}
+						</DialogTitle>
+					</DialogHeader>
+
+					{/* Scrollable body */}
+					<div className='overflow-y-auto px-6 py-4 flex flex-col gap-3'>
+						{row.map((item, i) => (
+							<div
+								key={i}
+								className='rounded-md bg-muted/50 border border-border px-4 py-3 flex flex-col gap-1'
+							>
+								<span className='text-[11px] font-semibold uppercase tracking-wide text-muted-foreground'>
+									{item.questionText}
+								</span>
+								<span className='text-sm text-foreground leading-relaxed wrap-break-word'>
+									{item.answerText || (
+										<span className='text-muted-foreground italic'>—</span>
+									)}
+								</span>
+							</div>
+						))}
+					</div>
+				</DialogContent>
+			</Dialog>
+		</>
 	);
 }
 

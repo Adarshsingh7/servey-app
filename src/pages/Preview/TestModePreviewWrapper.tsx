@@ -1,3 +1,5 @@
+/** @format */
+
 import React, { type PropsWithChildren } from 'react';
 
 function TestModePreviewWrapper({ children }: PropsWithChildren) {
@@ -17,37 +19,7 @@ function TestModePreviewWrapper({ children }: PropsWithChildren) {
 				</div>
 			</div>
 
-			<div className='flex-1 overflow-y-auto p-6 bg-gray-50'>
-				{/* <div className='max-w-2xl mx-auto bg-white p-8 rounded-lg shadow-sm border border-gray-200'>
-					<h1 className='text-2xl font-bold mb-2'>
-						{surveyTitle || 'Untitled Survey'}
-					</h1>
-					{surveyDescription && (
-						<p className='text-gray-600 mb-6'>{surveyDescription}</p>
-					)}
-
-					<div className='space-y-6'>
-						{components.map((c, i) => (
-							<PreviewRenderer
-								key={i}
-								component={c}
-							/>
-						))}
-					</div>
-
-					{components.length > 0 && (
-						<div className='mt-8'>
-							<Button
-								fullWidth
-								size='lg'
-							>
-								Submit Survey
-							</Button>
-						</div>
-					)}
-				</div> */}
-				{children}
-			</div>
+			<div className='flex-1 overflow-y-auto p-6 bg-gray-50'>{children}</div>
 		</div>
 	);
 }

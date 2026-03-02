@@ -31,7 +31,7 @@ interface SurveyType {
 	description: string;
 	status: 'drafted' | 'live' | 'completed';
 	user?: string;
-	_id?: string;
+	_id: string;
 	components: SurveyComponent[];
 }
 
@@ -92,6 +92,7 @@ interface ResponseComponent {
 interface SurveyResponseType {
 	surveyId: Schema.Types.ObjectId;
 	_id: string;
+	email: string;
 	createdAt: string;
 	components: [ResponseComponent];
 }

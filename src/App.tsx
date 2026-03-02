@@ -11,6 +11,7 @@ import Profile from './pages/profile';
 import AuthWrapper from './components/AuthWrapper';
 import AnalyticsPage from './pages/analytics';
 import PricingPage from './pages/pricing';
+import QRCode from 'react-qr-code';
 
 const queryClient = new QueryClient();
 

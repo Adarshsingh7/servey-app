@@ -1,3 +1,4 @@
+import responseApi from '@/utils/response.feature';
 import surveyApi, { surveyApiClient } from '@/utils/survey.feature';
 import {
 	QueryClient,
@@ -42,6 +43,11 @@ export const useUpdateSurvey = () => {
 		},
 	});
 };
+
+// export const useGetSurveyResponsesBasedOnSurveyIds = (surveyId: string[]) => {
+// 	const query = `/?surveyId=${surveyId.join('surveyId=')}`;
+// 	return useMutation({ mutationFn: () => });
+// };
 
 export const useGetSurveyBasedOnUserId = (userId: string) => {
 	return useQuery({
