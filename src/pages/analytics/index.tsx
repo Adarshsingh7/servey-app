@@ -1,5 +1,3 @@
-/** @format */
-
 import { useParams, useNavigate } from 'react-router-dom';
 import {
 	Card,
@@ -40,6 +38,8 @@ import {
 import { useState } from 'react';
 import { useGetSurveyBySurveyId } from '@/queries/survey.query';
 import { useGetAnalyticBySurveyId } from '@/queries/analytic.query';
+import { toast } from 'sonner';
+import { objectsToCSV } from '@/utils/objectsToCSV';
 
 /* ─────────────────────────────── types ─────────────────────────────── */
 interface ResponseComponent {
@@ -407,11 +407,46 @@ function AnalyticsPage() {
 	const formattedRes = responses.map((res) => {
 		const resFormatted = res.components.map((com) => ({
 			questionText: questionMap[com.questionId],
-			email: res.email,
 			answerText: com.answer,
 		}));
 		return resFormatted;
 	});
+
+	function flattenData(data: any[]) {
+		return data.map((item, idx) => {
+			const result: Record<string, string | number> = {
+				email: responses[idx].email || '_',
+				submittedAt: new Date(responses[idx].createdAt).toDateString(),
+			};
+
+			item.forEach((rec) => {
+				result[rec.questionText] = rec.answerText;
+			});
+
+			return result;
+		});
+	}
+
+	const handleExportCSV = function () {
+		// formatting the data
+		const jsonData = flattenData(formattedRes);
+		const csvData = objectsToCSV(jsonData);
+
+		// creating data to CSV format
+		const blob = new Blob([csvData], { type: 'text/csv;charset=utf-8;' });
+		const link = document.createElement('a');
+
+		// making downloadable link
+		const file_name = `${survey.title.toLowerCase().split(' ').join('_')}_response`;
+		link.href = URL.createObjectURL(blob);
+		link.download = `${file_name}.csv`;
+		link.click();
+
+		// wrapping session with toast
+		toast.success(
+			`Survey Response in ${file_name}.csv downloaded successfully`,
+		);
+	};
 
 	return (
 		<div className='min-h-screen bg-background'>
@@ -528,10 +563,13 @@ function AnalyticsPage() {
 						<h2 className='text-lg font-semibold text-foreground'>
 							Individual Responses
 						</h2>
-						<span className='text-sm text-muted-foreground'>
-							{totalResponses}{' '}
-							{totalResponses === 1 ? 'submission' : 'submissions'}
-						</span>
+						<div className='flex gap-5 items-center'>
+							<span className='text-sm text-muted-foreground'>
+								{totalResponses}{' '}
+								{totalResponses === 1 ? 'submission' : 'submissions'}
+							</span>
+							<Button onClick={handleExportCSV}>Export CSV</Button>
+						</div>
 					</div>
 
 					{responses.length === 0 ? (
@@ -569,7 +607,7 @@ function AnalyticsPage() {
 									{formattedRes.map((res, idx) => (
 										<ResRow
 											key={idx}
-											email={formattedRes[idx][0].email}
+											email={responses[idx].email}
 											row={res}
 											index={idx}
 										/>
@@ -597,7 +635,6 @@ function ResRow({
 	const PREVIEW_COUNT = 3;
 	const preview = row.slice(0, PREVIEW_COUNT);
 	const remaining = row.length - PREVIEW_COUNT;
-
 	return (
 		<>
 			<TableRow className='hover:bg-accent/40 transition-colors align-top'>

@@ -11,7 +11,8 @@ import Profile from './pages/profile';
 import AuthWrapper from './components/AuthWrapper';
 import AnalyticsPage from './pages/analytics';
 import PricingPage from './pages/pricing';
-import QRCode from 'react-qr-code';
+import { ThemeProvider } from '@/context/theme.context';
+import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 const queryClient = new QueryClient();
 
@@ -96,9 +97,12 @@ function App() {
 				richColors
 				theme='light'
 			/>
-			<QueryClientProvider client={queryClient}>
-				{routerProvider}
-			</QueryClientProvider>
+			<ThemeProvider>
+				<QueryClientProvider client={queryClient}>
+					<ReactQueryDevtools initialIsOpen={false} />
+					{routerProvider}
+				</QueryClientProvider>
+			</ThemeProvider>
 		</div>
 	);
 }

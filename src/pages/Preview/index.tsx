@@ -11,168 +11,189 @@ import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
 import { Mail } from 'lucide-react';
-import surveyApi from '@/utils/survey.feature';
+import { useTheme } from '@/context/theme.context';
 
-// import { TextInput } from '../survey-builder/components/LivePreviewPanel';
-
-// Field Components
-export const TextInputField = ({ component, value, onChange, error }) => (
-	<div className='space-y-1.5'>
-		<label
-			htmlFor={component.id}
-			className='block text-sm font-medium text-slate-700'
-		>
-			{component.label}
-			{component.required && <span className='text-red-500 ml-1'>*</span>}
-		</label>
-		{component.description && (
-			<p className='text-xs text-slate-500'>{component.description}</p>
-		)}
-		<input
-			type='text'
-			id={component.id}
-			value={value || ''}
-			onChange={(e) => onChange(component.id, e.target.value)}
-			placeholder={component.placeholder}
-			className='w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
-		/>
-		{error && <p className='text-xs text-red-500'>{error}</p>}
-	</div>
-);
-
-export const EmailField = ({ component, value, onChange, error }) => (
-	<div className='space-y-1.5'>
-		<label
-			htmlFor={component.id}
-			className='block text-sm font-medium text-slate-700'
-		>
-			{component.label}
-			{component.required && <span className='text-red-500 ml-1'>*</span>}
-		</label>
-		{component.description && (
-			<p className='text-xs text-slate-500'>{component.description}</p>
-		)}
-		<input
-			type='email'
-			id={component.id}
-			value={value || ''}
-			onChange={(e) => onChange(component.id, e.target.value)}
-			placeholder={component.placeholder}
-			className='w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
-		/>
-		{error && <p className='text-xs text-red-500'>{error}</p>}
-	</div>
-);
-
-export const PhoneField = ({ component, value, onChange, error }) => (
-	<div className='space-y-1.5'>
-		<label
-			htmlFor={component.id}
-			className='block text-sm font-medium text-slate-700'
-		>
-			{component.label}
-			{component.required && <span className='text-red-500 ml-1'>*</span>}
-		</label>
-		{component.description && (
-			<p className='text-xs text-slate-500'>{component.description}</p>
-		)}
-		<input
-			type='tel'
-			id={component.id}
-			value={value || ''}
-			onChange={(e) => onChange(component.id, e.target.value)}
-			placeholder={component.placeholder}
-			className='w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
-		/>
-		{error && <p className='text-xs text-red-500'>{error}</p>}
-	</div>
-);
-
-export const NumberField = ({ component, value, onChange, error }) => (
-	<div className='space-y-1.5'>
-		<label
-			htmlFor={component.id}
-			className='block text-sm font-medium text-slate-700'
-		>
-			{component.label}
-			{component.required && <span className='text-red-500 ml-1'>*</span>}
-		</label>
-		{component.description && (
-			<p className='text-xs text-slate-500'>{component.description}</p>
-		)}
-		<input
-			type='number'
-			id={component.id}
-			value={value || ''}
-			onChange={(e) => onChange(component.id, e.target.value)}
-			placeholder={component.placeholder}
-			min={component.min}
-			max={component.max}
-			className='w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
-		/>
-		{error && <p className='text-xs text-red-500'>{error}</p>}
-	</div>
-);
-
-export const TextareaField = ({ component, value, onChange, error }) => (
-	<div className='space-y-1.5'>
-		<label
-			htmlFor={component.id}
-			className='block text-sm font-medium text-slate-700'
-		>
-			{component.label}
-			{component.required && <span className='text-red-500 ml-1'>*</span>}
-		</label>
-		{component.description && (
-			<p className='text-xs text-slate-500'>{component.description}</p>
-		)}
-		<textarea
-			id={component.id}
-			value={value || ''}
-			onChange={(e) => onChange(component.id, e.target.value)}
-			placeholder={component.placeholder}
-			rows={4}
-			className='w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-y'
-		/>
-		{error && <p className='text-xs text-red-500'>{error}</p>}
-	</div>
-);
-
-export const MultipleChoiceField = ({ component, value, onChange, error }) => (
-	<div className='space-y-1.5'>
-		<label className='block text-sm font-medium text-slate-700'>
-			{component.label}
-			{component.required && <span className='text-red-500 ml-1'>*</span>}
-		</label>
-		{component.description && (
-			<p className='text-xs text-slate-500'>{component.description}</p>
-		)}
-		<div className='space-y-2'>
-			{component.options?.map((option, idx) => (
-				<label
-					key={idx}
-					className='flex items-center space-x-2.5 cursor-pointer group'
-				>
-					<input
-						type='radio'
-						name={component.id}
-						value={option}
-						checked={value === option}
-						onChange={(e) => onChange(component.id, e.target.value)}
-						className='w-4 h-4 text-blue-600 border-slate-300 focus:ring-2 focus:ring-blue-500'
-					/>
-					<span className='text-sm text-slate-700 group-hover:text-slate-900'>
-						{option}
-					</span>
-				</label>
-			))}
+export const TextInputField = ({ component, value, onChange, error }) => {
+	const { color } = useTheme();
+	return (
+		<div className='space-y-1.5'>
+			<label
+				htmlFor={component.id}
+				className='block text-sm font-medium text-slate-700'
+			>
+				{component.label}
+				{component.required && <span className='text-red-500 ml-1'>*</span>}
+			</label>
+			{component.description && (
+				<p className={`text-xs ${color}`}>{component.description}</p>
+			)}
+			<input
+				type='text'
+				id={component.id}
+				value={value || ''}
+				onChange={(e) => onChange(component.id, e.target.value)}
+				placeholder={component.placeholder}
+				className='w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
+			/>
+			{error && <p className='text-xs text-red-500'>{error}</p>}
 		</div>
-		{error && <p className='text-xs text-red-500 mt-1.5'>{error}</p>}
-	</div>
-);
+	);
+};
+
+export const EmailField = ({ component, value, onChange, error }) => {
+	const { color } = useTheme();
+
+	return (
+		<div className='space-y-1.5'>
+			<label
+				htmlFor={component.id}
+				className='block text-sm font-medium text-slate-700'
+			>
+				{component.label}
+				{component.required && <span className='text-red-500 ml-1'>*</span>}
+			</label>
+			{component.description && (
+				<p className={`text-xs ${color}`}>{component.description}</p>
+			)}
+			<input
+				type='email'
+				id={component.id}
+				value={value || ''}
+				onChange={(e) => onChange(component.id, e.target.value)}
+				placeholder={component.placeholder}
+				className='w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
+			/>
+			{error && <p className='text-xs text-red-500'>{error}</p>}
+		</div>
+	);
+};
+
+export const PhoneField = ({ component, value, onChange, error }) => {
+	const { color } = useTheme();
+
+	return (
+		<div className='space-y-1.5'>
+			<label
+				htmlFor={component.id}
+				className='block text-sm font-medium text-slate-700'
+			>
+				{component.label}
+				{component.required && <span className='text-red-500 ml-1'>*</span>}
+			</label>
+			{component.description && (
+				<p className={`text-xs ${color}`}>{component.description}</p>
+			)}
+			<input
+				type='tel'
+				id={component.id}
+				value={value || ''}
+				onChange={(e) => onChange(component.id, e.target.value)}
+				placeholder={component.placeholder}
+				className='w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
+			/>
+			{error && <p className='text-xs text-red-500'>{error}</p>}
+		</div>
+	);
+};
+
+export const NumberField = ({ component, value, onChange, error }) => {
+	const { color } = useTheme();
+
+	return (
+		<div className='space-y-1.5'>
+			<label
+				htmlFor={component.id}
+				className='block text-sm font-medium text-slate-700'
+			>
+				{component.label}
+				{component.required && <span className='text-red-500 ml-1'>*</span>}
+			</label>
+			{component.description && (
+				<p className={`text-xs ${color}`}>{component.description}</p>
+			)}
+			<input
+				type='number'
+				id={component.id}
+				value={value || ''}
+				onChange={(e) => onChange(component.id, e.target.value)}
+				placeholder={component.placeholder}
+				min={component.min}
+				max={component.max}
+				className='w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
+			/>
+			{error && <p className='text-xs text-red-500'>{error}</p>}
+		</div>
+	);
+};
+
+export const TextareaField = ({ component, value, onChange, error }) => {
+	const { color } = useTheme();
+
+	return (
+		<div className='space-y-1.5'>
+			<label
+				htmlFor={component.id}
+				className='block text-sm font-medium text-slate-700'
+			>
+				{component.label}
+				{component.required && <span className='text-red-500 ml-1'>*</span>}
+			</label>
+			{component.description && (
+				<p className={`text-xs ${color}`}>{component.description}</p>
+			)}
+			<textarea
+				id={component.id}
+				value={value || ''}
+				onChange={(e) => onChange(component.id, e.target.value)}
+				placeholder={component.placeholder}
+				rows={4}
+				className='w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent resize-y'
+			/>
+			{error && <p className='text-xs text-red-500'>{error}</p>}
+		</div>
+	);
+};
+
+export const MultipleChoiceField = ({ component, value, onChange, error }) => {
+	const { color } = useTheme();
+
+	return (
+		<div className='space-y-1.5'>
+			<label className='block text-sm font-medium text-slate-700'>
+				{component.label}
+				{component.required && <span className='text-red-500 ml-1'>*</span>}
+			</label>
+			{component.description && (
+				<p className={`text-xs ${color}`}>{component.description}</p>
+			)}
+			<div className='space-y-2'>
+				{component.options?.map((option, idx) => (
+					<label
+						key={idx}
+						className='flex items-center space-x-2.5 cursor-pointer group'
+					>
+						<input
+							type='radio'
+							name={component.id}
+							value={option}
+							checked={value === option}
+							onChange={(e) => onChange(component.id, e.target.value)}
+							className='w-4 h-4 text-blue-600 border-slate-300 focus:ring-2 focus:ring-blue-500'
+						/>
+						<span className='text-sm text-slate-700 group-hover:text-slate-900'>
+							{option}
+						</span>
+					</label>
+				))}
+			</div>
+			{error && <p className='text-xs text-red-500 mt-1.5'>{error}</p>}
+		</div>
+	);
+};
 
 export const CheckboxesField = ({ component, value, onChange, error }) => {
 	const selectedValues = value || [];
+	const { color } = useTheme();
 
 	const handleToggle = (option) => {
 		const newValues = selectedValues.includes(option)
@@ -188,7 +209,7 @@ export const CheckboxesField = ({ component, value, onChange, error }) => {
 				{component.required && <span className='text-red-500 ml-1'>*</span>}
 			</label>
 			{component.description && (
-				<p className='text-xs text-slate-500'>{component.description}</p>
+				<p className={`text-xs ${color}`}>{component.description}</p>
 			)}
 			<div className='space-y-2'>
 				{component.options?.map((option, idx) => (
@@ -213,40 +234,46 @@ export const CheckboxesField = ({ component, value, onChange, error }) => {
 	);
 };
 
-export const DropdownField = ({ component, value, onChange, error }) => (
-	<div className='space-y-1.5'>
-		<label
-			htmlFor={component.id}
-			className='block text-sm font-medium text-slate-700'
-		>
-			{component.label}
-			{component.required && <span className='text-red-500 ml-1'>*</span>}
-		</label>
-		{component.description && (
-			<p className='text-xs text-slate-500'>{component.description}</p>
-		)}
-		<select
-			id={component.id}
-			value={value || ''}
-			onChange={(e) => onChange(component.id, e.target.value)}
-			className='w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white'
-		>
-			<option value=''>Select an option...</option>
-			{component.options?.map((option, idx) => (
-				<option
-					key={idx}
-					value={option}
-				>
-					{option}
-				</option>
-			))}
-		</select>
-		{error && <p className='text-xs text-red-500'>{error}</p>}
-	</div>
-);
+export const DropdownField = ({ component, value, onChange, error }) => {
+	const { color } = useTheme();
+
+	return (
+		<div className='space-y-1.5'>
+			<label
+				htmlFor={component.id}
+				className='block text-sm font-medium text-slate-700'
+			>
+				{component.label}
+				{component.required && <span className='text-red-500 ml-1'>*</span>}
+			</label>
+			{component.description && (
+				<p className={`text-xs ${color}`}>{component.description}</p>
+			)}
+			<select
+				id={component.id}
+				value={value || ''}
+				onChange={(e) => onChange(component.id, e.target.value)}
+				className='w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent bg-white'
+			>
+				<option value=''>Select an option...</option>
+				{component.options?.map((option, idx) => (
+					<option
+						key={idx}
+						value={option}
+					>
+						{option}
+					</option>
+				))}
+			</select>
+			{error && <p className='text-xs text-red-500'>{error}</p>}
+		</div>
+	);
+};
 
 export const StarRatingField = ({ component, value, onChange, error }) => {
 	const maxStars = component.max || 5;
+	const { color } = useTheme();
+
 	const [hover, setHover] = useState(0);
 
 	return (
@@ -256,7 +283,7 @@ export const StarRatingField = ({ component, value, onChange, error }) => {
 				{component.required && <span className='text-red-500 ml-1'>*</span>}
 			</label>
 			{component.description && (
-				<p className='text-xs text-slate-500'>{component.description}</p>
+				<p className={`text-xs ${color}`}>{component.description}</p>
 			)}
 			<div className='flex items-center space-x-1'>
 				{[...Array(maxStars)].map((_, idx) => {
@@ -292,6 +319,8 @@ export const StarRatingField = ({ component, value, onChange, error }) => {
 };
 
 export const ScaleField = ({ component, value, onChange, error }) => {
+	const { color } = useTheme();
+
 	const min = component.min || 1;
 	const max = component.max || 10;
 	const options = Array.from({ length: max - min + 1 }, (_, i) => min + i);
@@ -303,7 +332,7 @@ export const ScaleField = ({ component, value, onChange, error }) => {
 				{component.required && <span className='text-red-500 ml-1'>*</span>}
 			</label>
 			{component.description && (
-				<p className='text-xs text-slate-500'>{component.description}</p>
+				<p className={`text-xs ${color}`}>{component.description}</p>
 			)}
 			<div className='flex flex-wrap gap-2'>
 				{options.map((num) => (
@@ -327,6 +356,8 @@ export const ScaleField = ({ component, value, onChange, error }) => {
 };
 
 export const NPSField = ({ component, value, onChange, error }) => {
+	const { color } = useTheme();
+
 	const options = Array.from({ length: 11 }, (_, i) => i);
 
 	return (
@@ -336,7 +367,7 @@ export const NPSField = ({ component, value, onChange, error }) => {
 				{component.required && <span className='text-red-500 ml-1'>*</span>}
 			</label>
 			{component.description && (
-				<p className='text-xs text-slate-500'>{component.description}</p>
+				<p className={`text-xs ${color}`}>{component.description}</p>
 			)}
 			<div className='space-y-2'>
 				<div className='flex flex-wrap gap-2'>
@@ -365,90 +396,104 @@ export const NPSField = ({ component, value, onChange, error }) => {
 	);
 };
 
-export const DateField = ({ component, value, onChange, error }) => (
-	<div className='space-y-1.5'>
-		<label
-			htmlFor={component.id}
-			className='block text-sm font-medium text-slate-700'
-		>
-			{component.label}
-			{component.required && <span className='text-red-500 ml-1'>*</span>}
-		</label>
-		{component.description && (
-			<p className='text-xs text-slate-500'>{component.description}</p>
-		)}
-		<input
-			type='date'
-			id={component.id}
-			value={value || ''}
-			onChange={(e) => onChange(component.id, e.target.value)}
-			className='w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
-		/>
-		{error && <p className='text-xs text-red-500'>{error}</p>}
-	</div>
-);
+export const DateField = ({ component, value, onChange, error }) => {
+	const { color } = useTheme();
 
-export const TimeField = ({ component, value, onChange, error }) => (
-	<div className='space-y-1.5'>
-		<label
-			htmlFor={component.id}
-			className='block text-sm font-medium text-slate-700'
-		>
-			{component.label}
-			{component.required && <span className='text-red-500 ml-1'>*</span>}
-		</label>
-		{component.description && (
-			<p className='text-xs text-slate-500'>{component.description}</p>
-		)}
-		<input
-			type='time'
-			id={component.id}
-			value={value || ''}
-			onChange={(e) => onChange(component.id, e.target.value)}
-			className='w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
-		/>
-		{error && <p className='text-xs text-red-500'>{error}</p>}
-	</div>
-);
-
-export const YesNoField = ({ component, value, onChange, error }) => (
-	<div className='space-y-1.5'>
-		<label className='block text-sm font-medium text-slate-700'>
-			{component.label}
-			{component.required && <span className='text-red-500 ml-1'>*</span>}
-		</label>
-		{component.description && (
-			<p className='text-xs text-slate-500'>{component.description}</p>
-		)}
-		<div className='flex gap-3'>
-			<button
-				type='button'
-				onClick={() => onChange(component.id, 'yes')}
-				className={`flex-1 px-6 py-2.5 text-sm font-medium rounded-lg border transition-all focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-					value === 'yes'
-						? 'bg-blue-600 text-white border-blue-600'
-						: 'bg-white text-slate-700 border-slate-300 hover:border-blue-400'
-				}`}
+	return (
+		<div className='space-y-1.5'>
+			<label
+				htmlFor={component.id}
+				className='block text-sm font-medium text-slate-700'
 			>
-				Yes
-			</button>
-			<button
-				type='button'
-				onClick={() => onChange(component.id, 'no')}
-				className={`flex-1 px-6 py-2.5 text-sm font-medium rounded-lg border transition-all focus:outline-none focus:ring-2 focus:ring-blue-500 ${
-					value === 'no'
-						? 'bg-blue-600 text-white border-blue-600'
-						: 'bg-white text-slate-700 border-slate-300 hover:border-blue-400'
-				}`}
-			>
-				No
-			</button>
+				{component.label}
+				{component.required && <span className='text-red-500 ml-1'>*</span>}
+			</label>
+			{component.description && (
+				<p className={`text-xs ${color}`}>{component.description}</p>
+			)}
+			<input
+				type='date'
+				id={component.id}
+				value={value || ''}
+				onChange={(e) => onChange(component.id, e.target.value)}
+				className='w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
+			/>
+			{error && <p className='text-xs text-red-500'>{error}</p>}
 		</div>
-		{error && <p className='text-xs text-red-500 mt-1.5'>{error}</p>}
-	</div>
-);
+	);
+};
+
+export const TimeField = ({ component, value, onChange, error }) => {
+	const { color } = useTheme();
+
+	return (
+		<div className='space-y-1.5'>
+			<label
+				htmlFor={component.id}
+				className='block text-sm font-medium text-slate-700'
+			>
+				{component.label}
+				{component.required && <span className='text-red-500 ml-1'>*</span>}
+			</label>
+			{component.description && (
+				<p className={`text-xs ${color}`}>{component.description}</p>
+			)}
+			<input
+				type='time'
+				id={component.id}
+				value={value || ''}
+				onChange={(e) => onChange(component.id, e.target.value)}
+				className='w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
+			/>
+			{error && <p className='text-xs text-red-500'>{error}</p>}
+		</div>
+	);
+};
+
+export const YesNoField = ({ component, value, onChange, error }) => {
+	const { color } = useTheme();
+
+	return (
+		<div className='space-y-1.5'>
+			<label className='block text-sm font-medium text-slate-700'>
+				{component.label}
+				{component.required && <span className='text-red-500 ml-1'>*</span>}
+			</label>
+			{component.description && (
+				<p className={`text-xs ${color}`}>{component.description}</p>
+			)}
+			<div className='flex gap-3'>
+				<button
+					type='button'
+					onClick={() => onChange(component.id, 'yes')}
+					className={`flex-1 px-6 py-2.5 text-sm font-medium rounded-lg border transition-all focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+						value === 'yes'
+							? 'bg-blue-600 text-white border-blue-600'
+							: 'bg-white text-slate-700 border-slate-300 hover:border-blue-400'
+					}`}
+				>
+					Yes
+				</button>
+				<button
+					type='button'
+					onClick={() => onChange(component.id, 'no')}
+					className={`flex-1 px-6 py-2.5 text-sm font-medium rounded-lg border transition-all focus:outline-none focus:ring-2 focus:ring-blue-500 ${
+						value === 'no'
+							? 'bg-blue-600 text-white border-blue-600'
+							: 'bg-white text-slate-700 border-slate-300 hover:border-blue-400'
+					}`}
+				>
+					No
+				</button>
+			</div>
+			{error && <p className='text-xs text-red-500 mt-1.5'>{error}</p>}
+		</div>
+	);
+};
 
 export const EmojiField = ({ component, value, onChange, error }) => {
+	const { color } = useTheme();
+
 	const emojis = ['😢', '😕', '😐', '🙂', '😄'];
 
 	return (
@@ -458,7 +503,7 @@ export const EmojiField = ({ component, value, onChange, error }) => {
 				{component.required && <span className='text-red-500 ml-1'>*</span>}
 			</label>
 			{component.description && (
-				<p className='text-xs text-slate-500'>{component.description}</p>
+				<p className={`text-xs ${color}`}>{component.description}</p>
 			)}
 			<div className='flex gap-3 justify-center'>
 				{emojis.map((emoji, idx) => (
@@ -482,6 +527,8 @@ export const EmojiField = ({ component, value, onChange, error }) => {
 };
 
 export const FileUploadField = ({ component, value, onChange, error }) => {
+	const { color } = useTheme();
+
 	const [fileName, setFileName] = useState(value?.name || '');
 
 	const handleFileChange = (e) => {
@@ -504,7 +551,7 @@ export const FileUploadField = ({ component, value, onChange, error }) => {
 				{component.required && <span className='text-red-500 ml-1'>*</span>}
 			</label>
 			{component.description && (
-				<p className='text-xs text-slate-500'>{component.description}</p>
+				<p className={`text-xs ${color}`}>{component.description}</p>
 			)}
 			<div className='relative'>
 				{!fileName ? (
@@ -545,6 +592,7 @@ export const FileUploadField = ({ component, value, onChange, error }) => {
 
 export const MatrixField = ({ component, value, onChange, error }) => {
 	const answers = value || {};
+	const { color } = useTheme();
 
 	const handleChange = (row, column) => {
 		onChange(component.id, { ...answers, [row]: column });
@@ -557,7 +605,7 @@ export const MatrixField = ({ component, value, onChange, error }) => {
 				{component.required && <span className='text-red-500 ml-1'>*</span>}
 			</label>
 			{component.description && (
-				<p className='text-xs text-slate-500'>{component.description}</p>
+				<p className={`text-xs ${color}`}>{component.description}</p>
 			)}
 			<div className='overflow-x-auto'>
 				<table className='w-full text-sm border-collapse'>
@@ -606,6 +654,8 @@ export const MatrixField = ({ component, value, onChange, error }) => {
 };
 
 export const RankingField = ({ component, value, onChange, error }) => {
+	const { color } = useTheme();
+
 	const [items, setItems] = useState(value || component.options || []);
 
 	const moveItem = (fromIndex, toIndex) => {
@@ -623,7 +673,7 @@ export const RankingField = ({ component, value, onChange, error }) => {
 				{component.required && <span className='text-red-500 ml-1'>*</span>}
 			</label>
 			{component.description && (
-				<p className='text-xs text-slate-500'>{component.description}</p>
+				<p className={`text-xs ${color}`}>{component.description}</p>
 			)}
 			<div className='space-y-2'>
 				{items.map((item, idx) => (
@@ -685,12 +735,13 @@ export const ImageComponent = ({ component }) =>
 
 // Main Renderer
 export const Preview = ({ surveyParam }: { surveyParam?: SurveyType }) => {
+	const { color, font, setColor, setFont } = useTheme();
+
 	const [survey, setSurvey] = useState<SurveyType | null | undefined>(
 		surveyParam,
 	);
 	const [answers, setAnswers] = useState({});
 	const [errors, setErrors] = useState({});
-	const [loading, setLoading] = useState(false);
 	const [authReq, setAuthReq] = useState<string | null>(null);
 	const navigate = useNavigate();
 	const { id } = useParams<{ id: string }>();
@@ -900,7 +951,14 @@ export const Preview = ({ surveyParam }: { surveyParam?: SurveyType }) => {
 		setSurvey(surveyParam);
 	}, [surveyParam]);
 
-	if (loading || isFetching) {
+	useEffect(() => {
+		if (survey) {
+			setFont(survey.fontStyle || 'modern');
+			setColor(survey.primaryColor || 'blue');
+		}
+	}, [survey]);
+
+	if (isFetching) {
 		return (
 			<div className='min-h-screen flex items-center justify-center'>
 				<p className='text-slate-500 animate-pulse'>Loading...</p>
@@ -916,13 +974,11 @@ export const Preview = ({ surveyParam }: { surveyParam?: SurveyType }) => {
 		);
 	}
 
-	console.log({ authRequired: survey.authRequired });
-
 	if (survey.authRequired && !authReq)
 		return <EmailGate onSubmit={authCurrentUser} />;
 
 	return (
-		<div className='min-h-screen bg-slate-50 py-8 px-4'>
+		<div className={`min-h-screen bg-slate-50 py-8 px-4 ${font}`}>
 			<form
 				onSubmit={handleSubmit}
 				className='max-w-2xl mx-auto'
@@ -932,7 +988,7 @@ export const Preview = ({ surveyParam }: { surveyParam?: SurveyType }) => {
 						{survey.title}
 					</h1>
 					{survey.description && (
-						<p className='text-slate-600 text-sm sm:text-base leading-relaxed'>
+						<p className={`${color} text-sm sm:text-base leading-relaxed`}>
 							{survey.description}
 						</p>
 					)}

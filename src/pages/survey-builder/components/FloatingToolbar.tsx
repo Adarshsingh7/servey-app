@@ -1,25 +1,26 @@
 import React, { useState } from 'react';
 import Icon from '../../../components/AppIcon';
 import { Button } from '../../../components/ui/button';
+import { useTheme } from '@/context/theme.context';
 
 const FloatingToolbar = ({
 	onSave,
 	onUndo,
 	onRedo,
-	onTheme,
 	canUndo,
 	canRedo,
+	onTheme,
 	isSaving,
 }) => {
 	const [showThemePanel, setShowThemePanel] = useState(false);
 
 	const themeColors = [
-		{ name: 'Blue', value: '#2563EB', bg: 'bg-blue-600' },
-		{ name: 'Purple', value: '#9333EA', bg: 'bg-purple-600' },
-		{ name: 'Green', value: '#059669', bg: 'bg-emerald-600' },
-		{ name: 'Orange', value: '#F97316', bg: 'bg-orange-500' },
-		{ name: 'Red', value: '#DC2626', bg: 'bg-red-600' },
-		{ name: 'Pink', value: '#EC4899', bg: 'bg-pink-500' },
+		{ name: 'Blue', value: 'blue', bg: 'bg-blue-600' },
+		{ name: 'Purple', value: 'purple', bg: 'bg-purple-600' },
+		{ name: 'Green', value: 'green', bg: 'bg-emerald-600' },
+		{ name: 'Orange', value: 'orange', bg: 'bg-orange-500' },
+		{ name: 'Red', value: 'red', bg: 'bg-red-600' },
+		{ name: 'Pink', value: 'pink', bg: 'bg-pink-500' },
 	];
 
 	return (
@@ -221,29 +222,6 @@ const FloatingToolbar = ({
 											</span>
 										</button>
 									))}
-								</div>
-							</div>
-
-							{/* Background Style */}
-							<div>
-								<label className='block text-sm font-medium text-foreground mb-3'>
-									Background
-								</label>
-								<div className='grid grid-cols-2 gap-2 lg:gap-3'>
-									<button
-										onClick={() => onTheme({ background: 'light' })}
-										className='p-4 rounded-lg border border-border hover:border-primary transition-smooth bg-white'
-									>
-										<span className='text-sm font-medium text-gray-900'>
-											Light
-										</span>
-									</button>
-									<button
-										onClick={() => onTheme({ background: 'dark' })}
-										className='p-4 rounded-lg border border-border hover:border-primary transition-smooth bg-gray-900'
-									>
-										<span className='text-sm font-medium text-white'>Dark</span>
-									</button>
 								</div>
 							</div>
 						</div>

@@ -310,7 +310,9 @@ function Profile() {
 													disabled={sur.status !== 'live'}
 													onClick={() => setDisplayQrCode(sur._id)}
 												>
-													<QrCodeIcon className={`m-auto}`} />
+													<QrCodeIcon
+														className={`m-auto} ${sur.status !== 'live' ? 'text-primary/30' : 'text-primary'}`}
+													/>
 												</button>
 											</TableCell>
 											<TableCell className='text-center'>

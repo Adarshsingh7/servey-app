@@ -13,19 +13,25 @@ import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useGetSurveyBySurveyId } from '@/queries/survey.query';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useGetAuthUser, userQueryAuth } from '@/queries/auth.query';
+import { useTheme } from '@/context/theme.context';
+
+const initSurvey: SurveyType = {
+	components: [],
+	description: 'this is test desc',
+	_id: '',
+	authRequired: false,
+	status: 'drafted',
+	title: 'this is test title',
+	fontStyle: 'modern',
+	primaryColor: 'blue',
+};
 
 const SurveyBuilder = () => {
 	const queryClient = useQueryClient();
 	const navigate = useNavigate();
+	const { setColor, setFont } = useTheme();
 
-	const [survey, setSurvey] = useState<SurveyType>({
-		components: [],
-		description: 'this is test desc',
-		_id: '',
-		authRequired: false,
-		status: 'drafted',
-		title: 'this is test title',
-	});
+	const [survey, setSurvey] = useState<SurveyType>(initSurvey);
 	const [history, setHistory] = useState<SurveyComponent[][]>([
 		survey.components,
 	]);
@@ -178,8 +184,23 @@ const SurveyBuilder = () => {
 		}
 	};
 
-	const handleTheme = (themeSettings: unknown): void => {
-		console.log('Theme updated:', themeSettings);
+	const handleTheme = function (trigger: {
+		primaryColor?: string;
+		fontStyle?: string;
+	}) {
+		if (trigger.primaryColor) {
+			setColor(trigger.primaryColor as ColorTheme);
+			setSurvey((curr) => ({
+				...curr,
+				primaryColor: trigger.primaryColor as ColorTheme,
+			}));
+		} else if (trigger.fontStyle) {
+			setFont(trigger.fontStyle as FontTheme);
+			setSurvey((curr) => ({
+				...curr,
+				fontStyle: trigger.fontStyle as FontTheme,
+			}));
+		}
 	};
 
 	useEffect(() => {
@@ -190,7 +211,7 @@ const SurveyBuilder = () => {
 	if (!survey) return null;
 
 	return (
-		<div className='min-h-screen bg-background'>
+		<div className={`min-h-screen`}>
 			{/* Survey Header */}
 			<div className='bg-card border-b border-border'>
 				<div className='max-w-7xl mx-auto px-4 lg:px-6 py-4 lg:py-6'>
@@ -202,7 +223,7 @@ const SurveyBuilder = () => {
 								onChange={(e) =>
 									setSurvey((curr) => ({ ...curr, title: e?.target?.value }))
 								}
-								className='w-full text-xl lg:text-2xl font-heading font-bold text-foreground bg-transparent border-none outline-none focus:ring-2 focus:ring-primary/20 rounded px-2 py-1 mb-2'
+								className='w-full text-xl lg:text-2xl  font-heading font-bold text-foreground bg-transparent border-none outline-none focus:ring-2 focus:ring-primary/20 rounded px-2 py-1 mb-2'
 								placeholder='Survey Title'
 							/>
 							<input

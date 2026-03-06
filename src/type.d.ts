@@ -29,6 +29,8 @@ interface SurveyType {
 	authRequired: boolean;
 	title: string;
 	description: string;
+	fontStyle: FontTheme;
+	primaryColor: ColorTheme;
 	status: 'drafted' | 'live' | 'completed';
 	user?: string;
 	_id: string;
@@ -96,3 +98,6 @@ interface SurveyResponseType {
 	createdAt: string;
 	components: [ResponseComponent];
 }
+
+type ColorTheme = 'blue' | 'purple' | 'green' | 'orange' | 'red' | 'pink';
+type FontTheme = 'classic' | 'modern' | 'playful';
