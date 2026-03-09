@@ -62,7 +62,7 @@ function Profile() {
 			const surveyIds = survey.map((el) => el._id);
 			if (surveyIds.length > 0) {
 				console.log('calling the function');
-				getResponses(surveyIds);
+				getResponses(surveyIds as string[]);
 			}
 		}
 	}, [survey]);
@@ -308,7 +308,7 @@ function Profile() {
 											<TableCell className='px-6 py-4 flex align-middle items-center m-auto'>
 												<button
 													disabled={sur.status !== 'live'}
-													onClick={() => setDisplayQrCode(sur._id)}
+													onClick={() => setDisplayQrCode(sur._id!)}
 												>
 													<QrCodeIcon
 														className={`m-auto} ${sur.status !== 'live' ? 'text-primary/30' : 'text-primary'}`}
