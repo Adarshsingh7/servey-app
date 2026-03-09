@@ -12,7 +12,7 @@ import AuthWrapper from './components/AuthWrapper';
 import AnalyticsPage from './pages/analytics';
 import PricingPage from './pages/pricing';
 import { ThemeProvider } from '@/context/theme.context';
-import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
+// import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 const queryClient = new QueryClient();
 
@@ -99,7 +99,7 @@ function App() {
 			/>
 			<ThemeProvider>
 				<QueryClientProvider client={queryClient}>
-					<ReactQueryDevtools initialIsOpen={false} />
+					{/* <ReactQueryDevtools initialIsOpen={false} /> */}
 					{routerProvider}
 				</QueryClientProvider>
 			</ThemeProvider>

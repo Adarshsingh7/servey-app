@@ -33,7 +33,7 @@ interface SurveyType {
 	primaryColor: ColorTheme;
 	status: 'drafted' | 'live' | 'completed';
 	user?: string;
-	_id: string;
+	_id?: string;
 	components: SurveyComponent[];
 }
 

@@ -18,7 +18,6 @@ import { useTheme } from '@/context/theme.context';
 const initSurvey: SurveyType = {
 	components: [],
 	description: 'this is test desc',
-	_id: '',
 	authRequired: false,
 	status: 'drafted',
 	title: 'this is test title',
