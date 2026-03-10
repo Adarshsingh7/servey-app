@@ -22,7 +22,6 @@ import {
 	Edit,
 	Eye,
 	FileText,
-	LogOut,
 	ChevronLeft,
 	ChevronRight,
 	QrCodeIcon,
@@ -33,10 +32,10 @@ import { SurveyStatsCards } from './components/SurveyStatsCards';
 import responseApi from '@/utils/response.feature';
 import QRCodeDialog from './components/QRCodeDialog';
 import { surveyApiClient } from '@/utils/survey.feature';
+import Header from '@/components/Header';
 
 function Profile() {
 	const { data } = useQuery(userQueryAuth());
-	const queryClient = useQueryClient();
 	const user = data?.user;
 	const navigate = useNavigate();
 	const [settingsDialogOpen, setSettingsDialogOpen] = useState<string | null>(
@@ -46,6 +45,7 @@ function Profile() {
 	const [activeTab, setActiveTab] = useState('all');
 	const [currentPage, setCurrentPage] = useState(1);
 	const [displayQrcode, setDisplayQrCode] = useState<string | null>(null);
+	const [displayBanner, setDisplayBanner] = useState(true);
 	const itemsPerPage = 5;
 
 	const { data: surveyData } = useGetSurveyBasedOnUserId(user?._id || '');
@@ -86,15 +86,6 @@ function Profile() {
 		setCurrentPage(1);
 	};
 
-	const getUserInitials = (name: string) => {
-		return name
-			.split(' ')
-			.map((n) => n[0])
-			.join('')
-			.toUpperCase()
-			.slice(0, 2);
-	};
-
 	const getStatusBadge = (status: string) => {
 		const statusConfig = {
 			live: { variant: 'default' as const, label: 'Live' },
@@ -126,12 +117,6 @@ function Profile() {
 		updateSurvey({ id: surveyId, body: { status: newStatus } });
 	};
 
-	const handleLogOut = function () {
-		localStorage.removeItem('USER_TOKEN');
-		queryClient.invalidateQueries({ queryKey: ['auth_user'] });
-		navigate('/auth');
-	};
-
 	const handleCreateSurveyDialog = function () {
 		navigate('/create');
 	};
@@ -148,54 +133,29 @@ function Profile() {
 			></QRCodeDialog>
 			{/* Subtle grey background for dashboard feel */}
 			{/* Header / Banner */}
-			<header className='h-10 flex items-center bg-primary justify-center text-sm'>
-				<p className='text-white/90'>
-					Want access to Premium?{' '}
-					<Link
-						to='/pricing'
-						className='font-medium text-white hover:underline'
+			{displayBanner && (
+				<header className='h-10 flex items-center bg-primary justify-between px-4 text-sm'>
+					<span></span>
+					<p className='text-white/90'>
+						Want access to Premium?
+						<Link
+							to='/pricing'
+							className='font-medium text-white hover:underline ml-1'
+						>
+							Buy now
+						</Link>
+					</p>
+					<button
+						onClick={() => setDisplayBanner(false)}
+						className='text-white/90 hover:text-white'
+						aria-label='Close banner'
 					>
-						Buy now
-					</Link>
-				</p>
-			</header>
+						✕
+					</button>
+				</header>
+			)}
 			{/* Profile Navigation Bar */}
-			<div className='bg-white border-b border-border/60 sticky top-0 z-10'>
-				<div className='max-w-7xl mx-auto px-6 py-4 flex items-center justify-between'>
-					<div className='flex items-center gap-4'>
-						<Avatar className='h-10 w-10 border-2 border-primary/10'>
-							<AvatarImage
-								src={user.photo}
-								alt={user.name}
-							/>
-							<AvatarFallback>{getUserInitials(user.name)}</AvatarFallback>
-						</Avatar>
-						<div>
-							<h1 className='text-base font-semibold text-foreground leading-none'>
-								{user.name}
-							</h1>
-							<p className='text-xs text-muted-foreground mt-1'>{user.email}</p>
-						</div>
-					</div>
-					<div className='flex items-center gap-3'>
-						<Badge
-							variant='outline'
-							className='hidden sm:inline-flex bg-muted/50'
-						>
-							{user.role}
-						</Badge>
-						<Button
-							variant='ghost'
-							size='sm'
-							onClick={handleLogOut}
-							className='text-destructive hover:bg-destructive/5'
-						>
-							<LogOut className='h-4 w-4 mr-2' />
-							Logout
-						</Button>
-					</div>
-				</div>
-			</div>
+			<Header />
 			<div className='max-w-7xl mx-auto px-6 py-10'>
 				{/* Dashboard Summary Header */}
 				<div className='flex flex-col md:flex-row md:items-center justify-between mb-8 gap-4'>
@@ -233,25 +193,25 @@ function Profile() {
 									value='all'
 									className='px-6'
 								>
-									All
+									All Survey
 								</TabsTrigger>
 								<TabsTrigger
 									value='live'
 									className='px-6'
 								>
-									Live
+									Live Survey
 								</TabsTrigger>
 								<TabsTrigger
 									value='drafted'
 									className='px-6'
 								>
-									Drafts
+									Drafted Survey
 								</TabsTrigger>
 								<TabsTrigger
 									value='completed'
 									className='px-6'
 								>
-									Completed
+									Completed survey
 								</TabsTrigger>
 							</TabsList>
 						</Tabs>

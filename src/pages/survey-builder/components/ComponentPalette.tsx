@@ -1,5 +1,6 @@
 import { useState } from 'react';
 import Icon from '../../../components/AppIcon';
+import { GripVertical } from 'lucide-react';
 
 // interface SurveyComponent {
 // 	id: string;
@@ -237,25 +238,27 @@ const ComponentPalette = ({ onDragStart }: ComponentPaletteProps) => {
 	};
 
 	return (
-		<div className='h-full flex flex-col bg-card border-r border-border'>
+		<div className='h-screen w-full max-w-sm flex flex-col bg-card border-r border-border'>
 			{/* Header */}
-			<div className='p-4 border-b border-border'>
-				<div className='flex items-center gap-2 mb-3'>
-					<Icon
-						name='Package'
-						size={20}
-						color='var(--color-primary)'
-					/>
-					<h2 className='text-base lg:text-lg font-heading font-semibold text-foreground'>
-						Components
-					</h2>
+			<div className='p-4 lg:p-6 border-b border-border bg-card'>
+				<div className='flex items-center justify-between'>
+					<div className='flex gap-2 items-center'>
+						<Icon
+							name='Package'
+							size={20}
+							color='var(--color-primary)'
+						/>
+						<h2 className='text-base lg:text-lg font-heading font-semibold text-foreground'>
+							Components
+						</h2>
+					</div>
 				</div>
 				<p className='text-xs lg:text-sm text-muted-foreground'>
 					Drag components to canvas
 				</p>
 			</div>
 			{/* Category Tabs */}
-			<div className='flex overflow-x-auto border-b border-border scrollbar-hide'>
+			{/* <div className='flex overflow-x-auto border-b border-border scrollbar-hide'>
 				{componentCategories?.map((category) => (
 					<button
 						key={category?.id}
@@ -279,36 +282,59 @@ const ComponentPalette = ({ onDragStart }: ComponentPaletteProps) => {
 						</span>
 					</button>
 				))}
-			</div>
+			</div> */}
 			{/* Components List */}
-			<div className='flex-1 overflow-y-auto p-3 lg:p-4 space-y-2'>
+			<div className='overflow-y-auto p-3 lg:p-4 space-y-2 grid grid-cols-2 gap-1'>
 				{componentCategories
-					?.find((cat) => cat?.id === activeCategory)
-					?.components?.map((component) => (
-						<div
-							key={component?.id}
-							draggable
-							onDragStart={(e) => handleDragStart(e, component)}
-							className='p-3 lg:p-4 bg-background border border-border rounded-lg cursor-move hover:border-primary hover:shadow-elevation-2 transition-smooth group'
-						>
-							<div className='flex items-start gap-3'>
-								<div className='flex items-center justify-center w-8 h-8 lg:w-10 lg:h-10 rounded-lg bg-primary/10 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-smooth shrink-0'>
+					// ?.find((cat) => cat?.id === activeCategory)
+					.map((componentcategory) =>
+						componentcategory.components?.map((component) => (
+							<div
+								key={component.id}
+								draggable
+								onDragStart={(e) => handleDragStart(e, component)}
+								className='group relative flex items-center gap-2 p-1 
+										bg-card border border-border rounded-lg
+										cursor-grab active:cursor-grabbing active:scale-[0.98]
+										hover:bg-accent hover:border-primary/20 hover:shadow-sm
+										transition-all duration-200 ease-out
+										font-sans select-none'
+							>
+								{/* Visual Indicator: Drag Handle (Standard Google UX) */}
+								{/* <div className='text-muted-foreground/30 group-hover:text-primary/50 transition-colors'>
+									<GripVertical size={18} />
+								</div> */}
+
+								{/* Icon Wrapper: M3 Container Style */}
+								<div className='flex items-center justify-center w-10 h-10 shrink-0 rounded-xl bg-primary/5 text-primary group-hover:bg-primary group-hover:text-primary-foreground transition-all duration-200'>
 									<Icon
-										name={component?.icon}
-										size={18}
+										name={component.icon}
+										size={20}
 									/>
 								</div>
-								<div className='flex-1 min-w-0'>
-									<h3 className='text-sm lg:text-base font-medium text-foreground mb-0.5'>
-										{component?.name}
-									</h3>
-									<p className='text-xs text-muted-foreground line-clamp-2'>
-										{component?.description}
-									</p>
+
+								{/* Content: Optimized for scannability */}
+								<div className='flex-1 min-w-0 flex flex-col justify-center'>
+									<div className='flex items-center justify-between'>
+										<h3 className='text-sm font-medium text-foreground tracking-tight leading-none'>
+											{component.name}
+										</h3>
+									</div>
+
+									{/* {component.description && (
+										<p className='mt-1 text-xs text-muted-foreground line-clamp-1 group-hover:text-foreground/70 transition-colors'>
+											{component.description}
+										</p>
+									)} */}
+								</div>
+
+								{/* Hover State Secondary Action (Optional/Ghost) */}
+								<div className='opacity-0 group-hover:opacity-100 transition-opacity pr-2'>
+									<div className='h-2 w-2 rounded-full bg-primary' />
 								</div>
 							</div>
-						</div>
-					))}
+						)),
+					)}
 			</div>
 		</div>
 	);

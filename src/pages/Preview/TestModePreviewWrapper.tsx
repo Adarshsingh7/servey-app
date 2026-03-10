@@ -4,7 +4,7 @@ import React, { type PropsWithChildren } from 'react';
 
 function TestModePreviewWrapper({ children }: PropsWithChildren) {
 	return (
-		<div className='h-screen flex flex-col bg-white border-l border-gray-200'>
+		<div className='h-screen flex flex-col w-full bg-white border-l border-gray-200'>
 			{/* header */}
 			<div className='p-4 lg:p-6 border-b border-border bg-card'>
 				<div className='flex items-center justify-between'>

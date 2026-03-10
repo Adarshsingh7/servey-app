@@ -4,6 +4,7 @@
 import React, { useState } from 'react';
 import Icon from '../../../components/AppIcon';
 import { Button } from '../../../components/ui/button';
+import RichTextInput from '@/components/RichTextInput';
 
 interface CanvasWorkspaceProps {
 	components: SurveyComponent[];
@@ -13,6 +14,8 @@ interface CanvasWorkspaceProps {
 	onDeleteComponent: (id: string) => void;
 	onDrop: (e: React.DragEvent, index: number) => void;
 	onDragOver: (e: React.DragEvent) => void;
+	preview: boolean;
+	showPreview: () => void;
 }
 
 const CanvasWorkspace: React.FC<CanvasWorkspaceProps> = ({
@@ -23,6 +26,8 @@ const CanvasWorkspace: React.FC<CanvasWorkspaceProps> = ({
 	onDeleteComponent,
 	onDrop,
 	onDragOver,
+	preview,
+	showPreview,
 }) => {
 	const [dragOverIndex, setDragOverIndex] = useState<number | null>(null);
 
@@ -43,7 +48,7 @@ const CanvasWorkspace: React.FC<CanvasWorkspaceProps> = ({
 	};
 
 	return (
-		<div className='h-screen flex flex-col bg-background'>
+		<div className='h-screen flex flex-col bg-background w-full'>
 			{/* Canvas Header */}
 			<div className='p-4 lg:p-6 border-b border-border bg-card'>
 				<div className='flex items-center justify-between'>
@@ -60,19 +65,17 @@ const CanvasWorkspace: React.FC<CanvasWorkspaceProps> = ({
 						<Button
 							variant='outline'
 							size='sm'
-							// onClick={() =>
-							// 	window.open(`/preview/${data?.data?._id}`, '_blank')
-							// }
+							onClick={showPreview}
 							className='hidden lg:flex'
 						>
-							Preview
+							{preview ? 'Close Preview' : 'Open Preview'}
 						</Button>
 					</div>
 				</div>
 			</div>
 			{/* Canvas Area */}
 			<div className='flex-1 overflow-y-auto p-4 lg:p-6 max-h-screen'>
-				<div className='max-w-3xl mx-auto space-y-4 lg:space-y-6'>
+				<div className='max-w-3xl mx-auto space-y-4 lg:space-y-6  bg-[radial-gradient(circle,#8a8f99_0.1px,transparent_1px)] bg-size-[10px_10px]'>
 					{components?.length === 0 ? (
 						<div
 							onDrop={(e) => handleDrop(e, 0)}
@@ -107,7 +110,7 @@ const CanvasWorkspace: React.FC<CanvasWorkspaceProps> = ({
 										onDragLeave={handleDragLeave}
 										className={`
 						 h-10
-						 transition-smooth bg-[radial-gradient(circle,#8a8f99_0.1px,transparent_1px)] bg-size-[10px_10px]
+						 transition-smooth
 						${dragOverIndex === components.indexOf(component) ? 'bg-primary/20 h-12' : ''}
 						`}
 									/>
@@ -182,6 +185,7 @@ const renderDropdown = (
 						className='flex-1 text-sm bg-transparent border-none outline-none focus:ring-2 focus:ring-primary/20 rounded px-2 py-1'
 						placeholder={`Option ${optIndex + 1}`}
 					/>
+
 					<button
 						onClick={(e) => {
 							e?.stopPropagation();
@@ -719,7 +723,7 @@ const renderComponent = (
 							/>
 						</div>
 						<div className='flex-1 min-w-0'>
-							<input
+							{/* <input
 								type='text'
 								value={component?.label || ''}
 								onChange={(e) =>
@@ -728,6 +732,13 @@ const renderComponent = (
 								onClick={(e) => e?.stopPropagation()}
 								className='w-full text-sm lg:text-base font-medium text-foreground bg-transparent border-none outline-none focus:ring-2 focus:ring-primary/20 rounded px-2 py-1'
 								placeholder='Question text'
+							/> */}
+							<RichTextInput
+								initialContent={component?.label}
+								onChange={(html: string) => {
+									onUpdateComponent(component?.id, { label: html });
+								}}
+								placeholder={`Question text`}
 							/>
 							{component?.required && (
 								<span className='text-xs text-destructive ml-2'>*</span>

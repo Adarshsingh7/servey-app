@@ -21,7 +21,8 @@ export const TextInputField = ({ component, value, onChange, error }) => {
 				htmlFor={component.id}
 				className='block text-sm font-medium text-slate-700'
 			>
-				{component.label}
+				<RichTextRenderer html={component.label} />
+
 				{component.required && <span className='text-red-500 ml-1'>*</span>}
 			</label>
 			{component.description && (
@@ -49,7 +50,7 @@ export const EmailField = ({ component, value, onChange, error }) => {
 				htmlFor={component.id}
 				className='block text-sm font-medium text-slate-700'
 			>
-				{component.label}
+				<RichTextRenderer html={component.label} />
 				{component.required && <span className='text-red-500 ml-1'>*</span>}
 			</label>
 			{component.description && (
@@ -77,7 +78,7 @@ export const PhoneField = ({ component, value, onChange, error }) => {
 				htmlFor={component.id}
 				className='block text-sm font-medium text-slate-700'
 			>
-				{component.label}
+				<RichTextRenderer html={component.label} />
 				{component.required && <span className='text-red-500 ml-1'>*</span>}
 			</label>
 			{component.description && (
@@ -105,7 +106,7 @@ export const NumberField = ({ component, value, onChange, error }) => {
 				htmlFor={component.id}
 				className='block text-sm font-medium text-slate-700'
 			>
-				{component.label}
+				<RichTextRenderer html={component.label} />
 				{component.required && <span className='text-red-500 ml-1'>*</span>}
 			</label>
 			{component.description && (
@@ -135,7 +136,7 @@ export const TextareaField = ({ component, value, onChange, error }) => {
 				htmlFor={component.id}
 				className='block text-sm font-medium text-slate-700'
 			>
-				{component.label}
+				<RichTextRenderer html={component.label} />
 				{component.required && <span className='text-red-500 ml-1'>*</span>}
 			</label>
 			{component.description && (
@@ -160,7 +161,7 @@ export const MultipleChoiceField = ({ component, value, onChange, error }) => {
 	return (
 		<div className='space-y-1.5'>
 			<label className='block text-sm font-medium text-slate-700'>
-				{component.label}
+				<RichTextRenderer html={component.label} />
 				{component.required && <span className='text-red-500 ml-1'>*</span>}
 			</label>
 			{component.description && (
@@ -205,7 +206,7 @@ export const CheckboxesField = ({ component, value, onChange, error }) => {
 	return (
 		<div className='space-y-1.5'>
 			<label className='block text-sm font-medium text-slate-700'>
-				{component.label}
+				<RichTextRenderer html={component.label} />
 				{component.required && <span className='text-red-500 ml-1'>*</span>}
 			</label>
 			{component.description && (
@@ -243,7 +244,7 @@ export const DropdownField = ({ component, value, onChange, error }) => {
 				htmlFor={component.id}
 				className='block text-sm font-medium text-slate-700'
 			>
-				{component.label}
+				<RichTextRenderer html={component.label} />
 				{component.required && <span className='text-red-500 ml-1'>*</span>}
 			</label>
 			{component.description && (
@@ -279,7 +280,7 @@ export const StarRatingField = ({ component, value, onChange, error }) => {
 	return (
 		<div className='space-y-1.5'>
 			<label className='block text-sm font-medium text-slate-700'>
-				{component.label}
+				<RichTextRenderer html={component.label} />
 				{component.required && <span className='text-red-500 ml-1'>*</span>}
 			</label>
 			{component.description && (
@@ -328,7 +329,7 @@ export const ScaleField = ({ component, value, onChange, error }) => {
 	return (
 		<div className='space-y-1.5'>
 			<label className='block text-sm font-medium text-slate-700'>
-				{component.label}
+				<RichTextRenderer html={component.label} />
 				{component.required && <span className='text-red-500 ml-1'>*</span>}
 			</label>
 			{component.description && (
@@ -363,7 +364,7 @@ export const NPSField = ({ component, value, onChange, error }) => {
 	return (
 		<div className='space-y-1.5'>
 			<label className='block text-sm font-medium text-slate-700'>
-				{component.label}
+				<RichTextRenderer html={component.label} />
 				{component.required && <span className='text-red-500 ml-1'>*</span>}
 			</label>
 			{component.description && (
@@ -405,7 +406,7 @@ export const DateField = ({ component, value, onChange, error }) => {
 				htmlFor={component.id}
 				className='block text-sm font-medium text-slate-700'
 			>
-				{component.label}
+				<RichTextRenderer html={component.label} />
 				{component.required && <span className='text-red-500 ml-1'>*</span>}
 			</label>
 			{component.description && (
@@ -432,7 +433,7 @@ export const TimeField = ({ component, value, onChange, error }) => {
 				htmlFor={component.id}
 				className='block text-sm font-medium text-slate-700'
 			>
-				{component.label}
+				<RichTextRenderer html={component.label} />
 				{component.required && <span className='text-red-500 ml-1'>*</span>}
 			</label>
 			{component.description && (
@@ -456,7 +457,7 @@ export const YesNoField = ({ component, value, onChange, error }) => {
 	return (
 		<div className='space-y-1.5'>
 			<label className='block text-sm font-medium text-slate-700'>
-				{component.label}
+				<RichTextRenderer html={component.label} />
 				{component.required && <span className='text-red-500 ml-1'>*</span>}
 			</label>
 			{component.description && (
@@ -499,7 +500,7 @@ export const EmojiField = ({ component, value, onChange, error }) => {
 	return (
 		<div className='space-y-1.5'>
 			<label className='block text-sm font-medium text-slate-700'>
-				{component.label}
+				<RichTextRenderer html={component.label} />
 				{component.required && <span className='text-red-500 ml-1'>*</span>}
 			</label>
 			{component.description && (
@@ -547,7 +548,7 @@ export const FileUploadField = ({ component, value, onChange, error }) => {
 	return (
 		<div className='space-y-1.5'>
 			<label className='block text-sm font-medium text-slate-700'>
-				{component.label}
+				<RichTextRenderer html={component.label} />
 				{component.required && <span className='text-red-500 ml-1'>*</span>}
 			</label>
 			{component.description && (
@@ -601,7 +602,7 @@ export const MatrixField = ({ component, value, onChange, error }) => {
 	return (
 		<div className='space-y-1.5'>
 			<label className='block text-sm font-medium text-slate-700'>
-				{component.label}
+				<RichTextRenderer html={component.label} />
 				{component.required && <span className='text-red-500 ml-1'>*</span>}
 			</label>
 			{component.description && (
@@ -669,7 +670,7 @@ export const RankingField = ({ component, value, onChange, error }) => {
 	return (
 		<div className='space-y-1.5'>
 			<label className='block text-sm font-medium text-slate-700'>
-				{component.label}
+				<RichTextRenderer html={component.label} />
 				{component.required && <span className='text-red-500 ml-1'>*</span>}
 			</label>
 			{component.description && (
@@ -713,7 +714,9 @@ export const RankingField = ({ component, value, onChange, error }) => {
 
 // Non-input components
 export const HeadingComponent = ({ component }) => (
-	<h2 className='text-xl font-semibold text-slate-800'>{component.label}</h2>
+	<h2 className='text-xl font-semibold text-slate-800'>
+		<RichTextRenderer html={component.label} />
+	</h2>
 );
 
 export const ParagraphComponent = ({ component }) => (
@@ -1076,6 +1079,30 @@ export function EmailGate({ onSubmit }: { onSubmit: (email: string) => void }) {
 					Continue
 				</Button>
 			</div>
+		</div>
+	);
+}
+
+export function RichTextRenderer({ html }: { html: string }) {
+	if (!html) return null;
+
+	return (
+		<div>
+			<style>{`
+        @import url('https://fonts.googleapis.com/css2?family=DM+Sans:wght@400;500;600&display=swap');
+        .tiptap-content { font-size: 15px; line-height: 1.7; color: #1f2937; font-family: 'DM Sans', sans-serif; }
+        .tiptap-content p  { margin: 0 0 4px; }
+        .tiptap-content ul { list-style: disc; padding-left: 1.5em; }
+        .tiptap-content ol { list-style: decimal; padding-left: 1.5em; }
+        .tiptap-content a  { color: #4338ca; text-decoration: underline; }
+        .tiptap-content strong { font-weight: 600; }
+        .tiptap-content em { font-style: italic; }
+        .tiptap-content u  { text-decoration: underline; }
+      `}</style>
+			<div
+				className='tiptap-content'
+				dangerouslySetInnerHTML={{ __html: html }}
+			/>
 		</div>
 	);
 }

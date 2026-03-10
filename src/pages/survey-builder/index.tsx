@@ -2,7 +2,7 @@ import { useEffect, useState } from 'react';
 import ComponentPalette from './components/ComponentPalette';
 import CanvasWorkspace from './components/CanvasWorkspace';
 import FloatingToolbar from './components/FloatingToolbar';
-import PropertyPanel from './components/PropertyPanel';
+// import PropertyPanel from './components/PropertyPanel';
 import Icon from '../../components/AppIcon';
 import { Button } from '../../components/ui/button';
 import Preview from '../Preview';
@@ -14,6 +14,7 @@ import { useGetSurveyBySurveyId } from '@/queries/survey.query';
 import { useNavigate, useParams } from 'react-router-dom';
 import { useGetAuthUser, userQueryAuth } from '@/queries/auth.query';
 import { useTheme } from '@/context/theme.context';
+import Header from '@/components/Header';
 
 const initSurvey: SurveyType = {
 	components: [],
@@ -34,6 +35,7 @@ const SurveyBuilder = () => {
 	const [history, setHistory] = useState<SurveyComponent[][]>([
 		survey.components,
 	]);
+	const [showPreview, setShowPreview] = useState(false);
 
 	const [selectedComponent, setSelectedComponent] =
 		useState<SurveyComponent | null>(null);
@@ -87,7 +89,6 @@ const SurveyBuilder = () => {
 	const addToHistory = (newComponents: SurveyComponent[]): void => {
 		const newHistory = history?.slice(0, historyIndex + 1);
 		newHistory?.push(newComponents);
-		console.log(newComponents);
 		setHistory(newHistory);
 		setHistoryIndex(newHistory?.length - 1);
 	};
@@ -211,6 +212,7 @@ const SurveyBuilder = () => {
 
 	return (
 		<div className={`min-h-screen`}>
+			<Header />
 			{/* Survey Header */}
 			<div className='bg-card border-b border-border'>
 				<div className='max-w-7xl mx-auto px-4 lg:px-6 py-4 lg:py-6'>
@@ -222,7 +224,7 @@ const SurveyBuilder = () => {
 								onChange={(e) =>
 									setSurvey((curr) => ({ ...curr, title: e?.target?.value }))
 								}
-								className='w-full text-xl lg:text-2xl  font-heading font-bold text-foreground bg-transparent border-none outline-none focus:ring-2 focus:ring-primary/20 rounded px-2 py-1 mb-2'
+								className='w-full text-xl lg:text-2xl  font-heading font-bold text-foreground bg-transparent border outline-none focus:ring-2 focus:ring-primary/20 rounded px-2 py-1 mb-2'
 								placeholder='Survey Title'
 							/>
 							<input
@@ -234,7 +236,7 @@ const SurveyBuilder = () => {
 										description: e?.target?.value,
 									}))
 								}
-								className='w-full text-sm lg:text-base text-muted-foreground bg-transparent border-none outline-none focus:ring-2 focus:ring-primary/20 rounded px-2 py-1'
+								className='w-full text-sm lg:text-base text-muted-foreground bg-transparent border outline-none focus:ring-2 focus:ring-primary/20 rounded px-2 py-1'
 								placeholder='Survey Description'
 							/>
 						</div>
@@ -262,7 +264,7 @@ const SurveyBuilder = () => {
 			{/* Main Content */}
 			<div className='h-[calc(100vh-16rem)] lg:max-h-[calc(100vh-14rem)]'>
 				{/* Desktop Layout */}
-				<div className='hidden lg:grid lg:grid-cols-[280px_1fr_400px] h-full'>
+				<div className='hidden lg:flex h-full'>
 					<ComponentPalette onDragStart={() => {}} />
 					<CanvasWorkspace
 						components={survey.components}
@@ -272,10 +274,14 @@ const SurveyBuilder = () => {
 						onDeleteComponent={handleDeleteComponent}
 						onDrop={handleDrop}
 						onDragOver={handleDragOver}
+						preview={showPreview}
+						showPreview={() => setShowPreview((prev) => !prev)}
 					/>
-					<TestModePreviewWrapper>
-						<Preview surveyParam={survey} />
-					</TestModePreviewWrapper>
+					{showPreview && (
+						<TestModePreviewWrapper>
+							<Preview surveyParam={survey} />
+						</TestModePreviewWrapper>
+					)}
 				</div>
 
 				{/* Mobile Layout */}
@@ -285,10 +291,12 @@ const SurveyBuilder = () => {
 							components={survey.components}
 							selectedComponent={selectedComponent}
 							onSelectComponent={handleSelectComponent}
+							preview={showPreview}
 							onUpdateComponent={handleUpdateComponent}
 							onDeleteComponent={handleDeleteComponent}
 							onDrop={handleDrop}
 							onDragOver={handleDragOver}
+							showPreview={() => setShowPreview((prev) => !prev)}
 						/>
 					) : (
 						<Preview surveyParam={survey} />
@@ -345,7 +353,7 @@ const SurveyBuilder = () => {
 				canRedo={historyIndex < history?.length - 1}
 				isSaving={isSaving}
 			/>
-			{showPropertyPanel && selectedComponent?.id && (
+			{/* {showPropertyPanel && selectedComponent?.id && (
 				<PropertyPanel
 					component={selectedComponent}
 					onUpdate={(updates) =>
@@ -353,7 +361,7 @@ const SurveyBuilder = () => {
 					}
 					onClose={() => setShowPropertyPanel(false)}
 				/>
-			)}
+			)} */}
 		</div>
 	);
 };

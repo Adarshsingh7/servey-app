@@ -18,21 +18,21 @@ export function SurveyStatsCards({ surveys, totalApplies }: StatsProps) {
 
 	const items = [
 		{
-			label: 'Live',
+			label: 'Live Survey',
 			value: stats.active,
 			icon: Clock,
 			color: 'text-emerald-600',
 			bg: 'bg-emerald-50',
 		},
 		{
-			label: 'Completed',
+			label: 'Completed Survey',
 			value: stats.completed,
 			icon: CheckCircle2,
 			color: 'text-blue-600',
 			bg: 'bg-blue-50',
 		},
 		{
-			label: 'Drafts',
+			label: 'Drafted Survey',
 			value: stats.drafted,
 			icon: FileEdit,
 			color: 'text-amber-600',
@@ -54,18 +54,16 @@ export function SurveyStatsCards({ surveys, totalApplies }: StatsProps) {
 					key={item.label}
 					className='border border-border/50 shadow-sm hover:shadow-md transition-all duration-200'
 				>
-					<CardContent className='p-6'>
+					<CardContent className='p-2'>
 						<div className='flex items-center justify-between'>
 							<div className='space-y-1'>
-								<p className='text-sm font-medium text-muted-foreground uppercase tracking-wider'>
+								<div className='text-sm font-medium text-muted-foreground uppercase tracking-wider flex gap-2 items-center justify-between'>
+									<item.icon className={`h-6 w-6 ${item.color}`} />
 									{item.label}
-								</p>
-								<p className='text-3xl font-bold tracking-tight'>
-									{item.value}
-								</p>
-							</div>
-							<div className={`p-3 rounded-2xl ${item.bg}`}>
-								<item.icon className={`h-6 w-6 ${item.color}`} />
+									<p className='text-xl font-bold tracking-tight'>
+										{item.value}
+									</p>
+								</div>
 							</div>
 						</div>
 					</CardContent>

@@ -1,7 +1,6 @@
 import React, { useState } from 'react';
 import Icon from '../../../components/AppIcon';
 import { Button } from '../../../components/ui/button';
-import { useTheme } from '@/context/theme.context';
 
 const FloatingToolbar = ({
 	onSave,
@@ -26,7 +25,7 @@ const FloatingToolbar = ({
 	return (
 		<>
 			{/* Desktop Toolbar */}
-			<div className='hidden lg:flex fixed top-20 right-6 z-sticky flex-col gap-2 bg-card border border-border rounded-lg shadow-elevation-4 p-2'>
+			<div className='hidden lg:flex fixed top-60 right-6 z-sticky flex-col gap-2 bg-card border border-border rounded-lg shadow-elevation-4 p-2'>
 				<Button
 					variant='ghost'
 					size='icon'
