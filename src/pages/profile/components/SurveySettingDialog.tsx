@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 import {
 	Dialog,
@@ -13,6 +13,7 @@ import { Button } from '@/components/ui/button';
 import { Label } from '@/components/ui/label';
 import { Switch } from '@/components/ui/switch';
 import { Separator } from '@/components/ui/separator';
+import Select from '@/components/ui/select';
 import {
 	BarChart3,
 	Edit,
@@ -32,7 +33,7 @@ interface SurveySettingsDialogProps {
 	onAuthToggle?: (surveyId: string, authEnabled: boolean) => Promise<any>;
 	onStatusChange?: (
 		surveyId: string,
-		newStatus: 'live' | 'completed',
+		newStatus: SurveyType['status'],
 	) => Promise<any>;
 }
 
@@ -47,6 +48,14 @@ export function SurveySettingsDialog({
 	const [authEnabled, setAuthEnabled] = useState(survey.authRequired || false);
 	const [isUpdatingAuth, setIsUpdatingAuth] = useState(false);
 	const [isUpdatingStatus, setIsUpdatingStatus] = useState(false);
+	const [selectedStatus, setSelectedStatus] = useState<SurveyType['status']>(
+		survey.status,
+	);
+
+	useEffect(() => {
+		setAuthEnabled(survey.authRequired || false);
+		setSelectedStatus(survey.status);
+	}, [survey.authRequired, survey.status, open]);
 
 	const handleAuthToggle = async (checked: boolean) => {
 		setIsUpdatingAuth(true);
@@ -59,7 +68,7 @@ export function SurveySettingsDialog({
 		setIsUpdatingAuth(false);
 	};
 
-	const handleStatusChange = async (newStatus: 'live' | 'completed') => {
+	const handleStatusChange = async (newStatus: SurveyType['status']) => {
 		setIsUpdatingStatus(true);
 
 		if (onStatusChange) {
@@ -69,9 +78,6 @@ export function SurveySettingsDialog({
 		setIsUpdatingStatus(false);
 		onOpenChange(false);
 	};
-
-	const canGoLive = survey.status === 'drafted';
-	const canComplete = survey.status === 'live';
 
 	const getStatusInfo = () => {
 		switch (survey.status) {
@@ -100,6 +106,30 @@ export function SurveySettingsDialog({
 	};
 
 	const statusInfo = getStatusInfo();
+	const statusOptions: Array<{
+		value: SurveyType['status'];
+		label: string;
+		description: string;
+	}> = [
+		{
+			value: 'drafted',
+			label: 'Draft',
+			description: 'Keep this survey editable and hidden from respondents.',
+		},
+		{
+			value: 'live',
+			label: 'Live',
+			description: 'Make this survey available to respondents right away.',
+		},
+		{
+			value: 'completed',
+			label: 'Completed',
+			description: 'Close this survey and stop accepting new responses.',
+		},
+	];
+	const selectedStatusOption =
+		statusOptions.find((option) => option.value === selectedStatus) ||
+		statusOptions[0];
 
 	return (
 		<Dialog
@@ -217,55 +247,32 @@ export function SurveySettingsDialog({
 							Status Management
 						</Label>
 						<p className='text-xs text-muted-foreground'>
-							Change the survey status. This is a one-way process.
+							Change the survey status at any time.
 						</p>
 
-						<div className='flex flex-col gap-2 mt-3'>
-							{canGoLive && (
-								<div className='space-y-2'>
-									<Button
-										variant='default'
-										onClick={() => handleStatusChange('live')}
-										disabled={isUpdatingStatus}
-										className='w-full gap-2'
-									>
-										<Radio className='h-4 w-4' />
-										Publish Survey (Go Live)
-									</Button>
-									<p className='text-xs text-muted-foreground'>
-										Make this survey available to respondents. Once live, you
-										cannot edit it.
-									</p>
-								</div>
-							)}
-
-							{canComplete && (
-								<div className='space-y-2'>
-									<Button
-										variant='outline'
-										onClick={() => handleStatusChange('completed')}
-										disabled={isUpdatingStatus}
-										className='w-full gap-2'
-									>
-										<CheckCircle2 className='h-4 w-4' />
-										Mark as Completed
-									</Button>
-									<p className='text-xs text-muted-foreground'>
-										Close this survey and stop accepting responses. This action
-										is permanent.
-									</p>
-								</div>
-							)}
-
-							{!canGoLive && !canComplete && (
-								<div className='text-center py-4'>
-									<p className='text-sm text-muted-foreground'>
-										{survey.status === 'completed'
-											? 'This survey is completed. No further status changes are available.'
-											: 'No status changes available for the current state.'}
-									</p>
-								</div>
-							)}
+						<div className='space-y-3 mt-3'>
+							<Select
+								value={selectedStatus}
+								options={statusOptions}
+								onChange={(value) =>
+									setSelectedStatus(value as SurveyType['status'])
+								}
+								disabled={isUpdatingStatus}
+								placeholder='Select status'
+							/>
+							<p className='text-xs text-muted-foreground'>
+								{selectedStatusOption.description}
+							</p>
+							<Button
+								variant='default'
+								onClick={() => handleStatusChange(selectedStatus)}
+								disabled={isUpdatingStatus || selectedStatus === survey.status}
+								className='w-full'
+							>
+								{selectedStatus === survey.status
+									? 'Current Status Selected'
+									: 'Update Status'}
+							</Button>
 						</div>
 					</div>
 				</div>

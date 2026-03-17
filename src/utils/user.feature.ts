@@ -10,6 +10,11 @@ interface AuthResponse {
 	user: UserType;
 }
 
+interface GoogleAuthBody {
+	credential: string;
+	role?: UserType['role'];
+}
+
 export const login = async (body: Partial<UserType>) =>
 	await authClient.post<AuthResponse, Partial<UserType>>('/login', body);
 
@@ -25,3 +30,6 @@ export const isAuth = async () => {
 
 export const signup = async (body: Partial<UserType>) =>
 	await authClient.post<AuthResponse, Partial<UserType>>('/signup', body);
+
+export const googleAuth = async (body: GoogleAuthBody) =>
+	await authClient.post<AuthResponse, GoogleAuthBody>('/google', body);

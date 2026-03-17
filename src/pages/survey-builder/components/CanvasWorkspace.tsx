@@ -61,7 +61,7 @@ const CanvasWorkspace: React.FC<CanvasWorkspaceProps> = ({
 							{components?.length !== 1 ? 's' : ''} added
 						</p>
 					</div>
-					<div className='flex items-center gap-2'>
+					<div className='flex items-center gap-2 mr-16'>
 						<Button
 							variant='outline'
 							size='sm'

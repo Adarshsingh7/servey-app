@@ -112,7 +112,7 @@ function Profile() {
 
 	const handleStatusChange = async (
 		surveyId: string,
-		newStatus: 'live' | 'completed',
+		newStatus: SurveyType['status'],
 	) => {
 		updateSurvey({ id: surveyId, body: { status: newStatus } });
 	};
@@ -235,7 +235,7 @@ function Profile() {
 								<TableHeader className='bg-muted/20'>
 									<TableRow>
 										<TableHead className='px-6 py-4'>Survey Details</TableHead>
-										<TableHead className='text-center'>Comps</TableHead>
+										{/* <TableHead className='text-center'>Comps</TableHead> */}
 										<TableHead className='text-center'>QRCode</TableHead>
 										<TableHead className='text-center'>Status</TableHead>
 										<TableHead className='text-center'>Response</TableHead>
@@ -257,15 +257,15 @@ function Profile() {
 												</p>
 											</TableCell>
 
-											<TableCell className='text-center'>
+											{/* <TableCell className='text-center'>
 												<Badge
 													variant='outline'
 													className='font-mono text-xs'
 												>
 													{sur.components.length}
 												</Badge>
-											</TableCell>
-											<TableCell className='px-6 py-4 flex align-middle items-center m-auto'>
+											</TableCell> */}
+											<TableCell className='px-6 py-4 text-center'>
 												<button
 													disabled={sur.status !== 'live'}
 													onClick={() => setDisplayQrCode(sur._id!)}
