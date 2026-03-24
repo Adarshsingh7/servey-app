@@ -24,7 +24,9 @@ import {
 	CheckCircle2,
 	FileEdit,
 	Settings,
+	Trash2,
 } from 'lucide-react';
+import { useDeleteSurveyById } from '@/queries/survey.query';
 
 interface SurveySettingsDialogProps {
 	survey: SurveyType;
@@ -52,10 +54,14 @@ export function SurveySettingsDialog({
 		survey.status,
 	);
 
+	const { mutate: handleDeleteSurvey, isSuccess: deleteSurveySuccess } =
+		useDeleteSurveyById();
+
 	useEffect(() => {
 		setAuthEnabled(survey.authRequired || false);
+		if (deleteSurveySuccess) onOpenChange(false);
 		setSelectedStatus(survey.status);
-	}, [survey.authRequired, survey.status, open]);
+	}, [survey.authRequired, survey.status, open, deleteSurveySuccess]);
 
 	const handleAuthToggle = async (checked: boolean) => {
 		setIsUpdatingAuth(true);
@@ -254,6 +260,7 @@ export function SurveySettingsDialog({
 							<Select
 								value={selectedStatus}
 								options={statusOptions}
+								className='border rounded-2xl'
 								onChange={(value) =>
 									setSelectedStatus(value as SurveyType['status'])
 								}
@@ -277,7 +284,15 @@ export function SurveySettingsDialog({
 					</div>
 				</div>
 
-				<div className='flex justify-end pt-4 border-t border-border'>
+				<div className='flex justify-end pt-4 border-t border-border gap-2'>
+					<Button
+						variant='outline'
+						className='gap-2'
+						onClick={() => handleDeleteSurvey(survey._id!)}
+					>
+						<Trash2 className='h-4 w-4' />
+						Delete
+					</Button>
 					<DialogClose asChild>
 						<Button
 							variant='outline'

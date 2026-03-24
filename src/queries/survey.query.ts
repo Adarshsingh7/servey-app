@@ -56,3 +56,15 @@ export const useGetSurveyBasedOnUserId = (userId: string) => {
 			surveyApiClient.get<ResponseType<SurveyType[]>>(`/?user=${userId}`),
 	});
 };
+
+export const useDeleteSurveyById = () => {
+	const queryClient = useQueryClient();
+	return useMutation({
+		mutationFn: (id: string) => surveyApiClient.delete(`/${id}`),
+		onSuccess: () => {
+			toast.success('Survey Deleted Successfully');
+			queryClient.invalidateQueries({ queryKey: ['survey'] });
+		},
+		onError: () => toast.error('failed to delete survey'),
+	});
+};

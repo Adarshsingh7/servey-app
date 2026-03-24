@@ -18,10 +18,10 @@ import Header from '@/components/Header';
 
 const initSurvey: SurveyType = {
 	components: [],
-	description: 'this is test desc',
+	description: 'Survey Description',
 	authRequired: false,
 	status: 'drafted',
-	title: 'this is test title',
+	title: 'Survey Title',
 	fontStyle: 'modern',
 	primaryColor: 'blue',
 };
