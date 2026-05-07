@@ -40,6 +40,7 @@ import { useGetSurveyBySurveyId } from '@/queries/survey.query';
 import { useGetAnalyticBySurveyId } from '@/queries/analytic.query';
 import { toast } from 'sonner';
 import { objectsToCSV } from '@/utils/objectsToCSV';
+import { htmlToText } from '@/utils/htmlToText';
 
 /* ─────────────────────────────── types ─────────────────────────────── */
 interface ResponseComponent {
@@ -369,13 +370,16 @@ function AnalyticsPage() {
 
 	const components = survey.components ?? [];
 
+	const getQuestionLabel = (c: SurveyComponent): string =>
+		htmlToText(c.label ?? c.name ?? 'Untitled question') || 'Untitled question';
+
 	// Build questionId → label lookup
 	// SurveyComponent uses `id`, but responses reference `questionId`
 	// Support both `id` and `questionId` fields defensively
 	const questionMap: Record<string, string> = Object.fromEntries(
 		components.map((c) => [
 			(c as SurveyComponent & { questionId?: string }).questionId ?? c.id,
-			c.label ?? c.name ?? 'Untitled question',
+			getQuestionLabel(c),
 		]),
 	);
 
@@ -544,9 +548,7 @@ function AnalyticsPage() {
 									<AnswerBreakdown
 										key={qId ?? i}
 										questionId={qId}
-										questionLabel={
-											comp.label ?? comp.name ?? 'Untitled question'
-										}
+										questionLabel={getQuestionLabel(comp)}
 										responses={responses}
 									/>
 								);

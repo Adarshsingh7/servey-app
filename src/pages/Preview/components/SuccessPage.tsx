@@ -1,17 +1,24 @@
 import { useState } from 'react';
 import { Check, LogOut, Share2, RotateCcw, CopyCheck } from 'lucide-react';
-import { useNavigate, useParams } from 'react-router-dom';
+import { useParams } from 'react-router-dom';
 import { toast } from 'sonner';
 
 export default function SuccessPage() {
 	const { id } = useParams();
-	const router = useNavigate();
 	const [copied, setCopied] = useState(false);
+
+	const getSurveyLink = () => {
+		const baseUrl =
+			import.meta.env.VITE_FRONTEND_URL?.replace(/\/$/, '') ||
+			window.location.origin;
+		return `${baseUrl}/preview/${id}`;
+	};
 
 	// Modern Share Functionality
 	const handleShare = async () => {
 		try {
-			await navigator.clipboard.writeText(window.location.href);
+			const url = getSurveyLink();
+			await navigator.clipboard.writeText(url);
 			setCopied(true);
 
 			// Reset "Copied" state after 2 seconds
@@ -25,7 +32,7 @@ export default function SuccessPage() {
 	};
 
 	const handleResubmitSurvey = function () {
-		window.open(`${import.meta.env.VITE_FRONTEND_URL}/preview/${id}`);
+		window.open(getSurveyLink());
 	};
 
 	return (

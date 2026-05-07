@@ -6,6 +6,10 @@ import { useParams, useNavigate } from 'react-router-dom';
 import { Star, Upload, X } from 'lucide-react';
 import responseApi from '@/utils/response.feature';
 import { toast } from 'sonner';
+import PhoneInput from 'react-phone-input-2';
+import { isValidPhoneNumber } from 'libphonenumber-js';
+import 'react-phone-input-2/lib/style.css';
+import { isNonMeaningful } from '@/utils/sanitize';
 import { useGetSurveyBySurveyId } from '@/queries/survey.query';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
@@ -72,6 +76,19 @@ export const EmailField = ({ component, value, onChange, error }) => {
 export const PhoneField = ({ component, value, onChange, error }) => {
 	const { color } = useTheme();
 
+	const minDigits =
+		typeof component.min === 'number'
+			? component.min
+			: component.min
+				? Number(component.min)
+				: 10;
+	const maxDigits =
+		typeof component.max === 'number'
+			? component.max
+			: component.max
+				? Number(component.max)
+				: 13;
+
 	return (
 		<div className='space-y-1.5'>
 			<label
@@ -84,14 +101,18 @@ export const PhoneField = ({ component, value, onChange, error }) => {
 			{component.description && (
 				<p className={`text-xs ${color}`}>{component.description}</p>
 			)}
-			<input
-				type='tel'
-				id={component.id}
-				value={value || ''}
-				onChange={(e) => onChange(component.id, e.target.value)}
-				placeholder={component.placeholder}
-				className='w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
-			/>
+			<div className='relative'>
+				<PhoneInput
+					country={'in'}
+					value={value || ''}
+					onChange={(phone) => onChange(component.id, phone)}
+					containerClass='w-full'
+					inputClass='!w-full !h-10 !bg-transparent !border !border-slate-300 !rounded-lg !pl-12 !text-sm focus:!ring-2 focus:!ring-blue-500 focus:!border-transparent'
+					buttonClass='!bg-transparent !border-none !rounded-l-lg hover:!bg-slate-100'
+					dropdownClass='!bg-white !text-slate-900'
+					placeholder={component.placeholder || 'Enter phone number'}
+				/>
+			</div>
 			{error && <p className='text-xs text-red-500'>{error}</p>}
 		</div>
 	);
@@ -417,6 +438,8 @@ export const DateField = ({ component, value, onChange, error }) => {
 				id={component.id}
 				value={value || ''}
 				onChange={(e) => onChange(component.id, e.target.value)}
+				min={component.min}
+				max={component.max}
 				className='w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
 			/>
 			{error && <p className='text-xs text-red-500'>{error}</p>}
@@ -444,6 +467,8 @@ export const TimeField = ({ component, value, onChange, error }) => {
 				id={component.id}
 				value={value || ''}
 				onChange={(e) => onChange(component.id, e.target.value)}
+				min={component.min}
+				max={component.max}
 				className='w-full px-3 py-2 text-sm border border-slate-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500 focus:border-transparent'
 			/>
 			{error && <p className='text-xs text-red-500'>{error}</p>}
@@ -757,6 +782,10 @@ export const Preview = ({ surveyParam }: { surveyParam?: SurveyType }) => {
 		setErrors((prev) => ({ ...prev, [id]: '' }));
 	}, []);
 
+
+	const isDigitsOnly = (val: unknown) =>
+		typeof val === 'string' && /^[0-9]+$/.test(val);
+
 	const validateField = (component: SurveyComponent) => {
 		const value = answers[component.id];
 
@@ -765,9 +794,10 @@ export const Preview = ({ surveyParam }: { surveyParam?: SurveyType }) => {
 				value === undefined ||
 				value === null ||
 				value === '' ||
+				isNonMeaningful(value) ||
 				(Array.isArray(value) && value.length === 0)
 			) {
-				return 'This field is required';
+				return 'This field is required (cannot be only spaces)';
 			}
 		}
 
@@ -778,12 +808,25 @@ export const Preview = ({ surveyParam }: { surveyParam?: SurveyType }) => {
 			}
 		}
 
-		if (component.type === 'number' && value) {
-			if (component.min !== undefined && Number(value) < component.min) {
-				return `Minimum value is ${component.min}`;
+		if (component.type === 'phone' && value) {
+			if (typeof value !== 'string') return 'Please enter a valid phone number';
+			
+			const phoneNumber = value.startsWith('+') ? value : '+' + value;
+			if (!isValidPhoneNumber(phoneNumber)) {
+				return 'Please enter a valid international phone number';
 			}
-			if (component.max !== undefined && Number(value) > component.max) {
-				return `Maximum value is ${component.max}`;
+		}
+
+		if (['date', 'time', 'number'].includes(component.type) && value) {
+			const val = component.type === 'number' ? Number(value) : value;
+			const min = component.min;
+			const max = component.max;
+
+			if (min !== undefined && min !== '' && val < min) {
+				return `Value must be at least ${min}`;
+			}
+			if (max !== undefined && max !== '' && val > max) {
+				return `Value must not exceed ${max}`;
 			}
 		}
 
@@ -812,6 +855,7 @@ export const Preview = ({ surveyParam }: { surveyParam?: SurveyType }) => {
 					value !== undefined &&
 					value !== null &&
 					value !== '' &&
+					!isNonMeaningful(value) &&
 					(!Array.isArray(value) || value.length > 0)
 				);
 			});
@@ -845,6 +889,7 @@ export const Preview = ({ surveyParam }: { surveyParam?: SurveyType }) => {
 
 		if (hasErrors) {
 			setErrors(newErrors);
+			toast.error('Please fill in all required fields.');
 			return;
 		}
 
@@ -852,7 +897,10 @@ export const Preview = ({ surveyParam }: { surveyParam?: SurveyType }) => {
 		const ans = Object.values(answers);
 		const components = ques.map((q, i) => ({
 			questionId: String(q),
-			answer: String(ans[i]),
+			answer:
+				typeof ans[i] === 'string'
+					? ans[i].trim()
+					: String(ans[i] ?? ''),
 		}));
 
 		if (!components) return;
@@ -1005,7 +1053,7 @@ export const Preview = ({ surveyParam }: { surveyParam?: SurveyType }) => {
 					<div className='pt-4'>
 						<button
 							type='submit'
-							disabled={!isFormValid}
+							
 							className='w-full px-6 py-3 bg-blue-600 text-white font-medium rounded-lg hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-blue-500 focus:ring-offset-2 disabled:opacity-50 disabled:cursor-not-allowed transition-colors'
 						>
 							Submit Survey

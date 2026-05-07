@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom';
+import { toast } from 'sonner';
 import {
 	Dialog,
 	DialogContent,
@@ -75,6 +76,11 @@ export function SurveySettingsDialog({
 	};
 
 	const handleStatusChange = async (newStatus: SurveyType['status']) => {
+		if (newStatus === 'live' && !(survey.components?.length > 0)) {
+			toast.error('Add at least one component before making the survey live');
+			return;
+		}
+
 		setIsUpdatingStatus(true);
 
 		if (onStatusChange) {
@@ -273,7 +279,11 @@ export function SurveySettingsDialog({
 							<Button
 								variant='default'
 								onClick={() => handleStatusChange(selectedStatus)}
-								disabled={isUpdatingStatus || selectedStatus === survey.status}
+								disabled={
+									isUpdatingStatus ||
+									selectedStatus === survey.status ||
+									(selectedStatus === 'live' && !(survey.components?.length > 0))
+								}
 								className='w-full'
 							>
 								{selectedStatus === survey.status

@@ -42,8 +42,8 @@ interface SurveyComponent {
 	type: SurveyComponentType;
 	name: string;
 	icon: string;
-	min?: number;
-	max?: number;
+	min?: number | string;
+	max?: number | string;
 	label?: string;
 	required?: boolean;
 	placeholder?: string;

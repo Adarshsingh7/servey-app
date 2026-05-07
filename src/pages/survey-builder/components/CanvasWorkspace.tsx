@@ -5,11 +5,14 @@ import React, { useState } from 'react';
 import Icon from '../../../components/AppIcon';
 import { Button } from '../../../components/ui/button';
 import RichTextInput from '@/components/RichTextInput';
+import PhoneInput from 'react-phone-input-2';
+import 'react-phone-input-2/lib/style.css';
 
 interface CanvasWorkspaceProps {
 	components: SurveyComponent[];
 	selectedComponent: SurveyComponent | null;
 	onSelectComponent: (component: SurveyComponent) => void;
+	onOpenSettings: (component: SurveyComponent) => void;
 	onUpdateComponent: (id: string, updates: Partial<SurveyComponent>) => void;
 	onDeleteComponent: (id: string) => void;
 	onDrop: (e: React.DragEvent, index: number) => void;
@@ -22,6 +25,7 @@ const CanvasWorkspace: React.FC<CanvasWorkspaceProps> = ({
 	components,
 	selectedComponent,
 	onSelectComponent,
+	onOpenSettings,
 	onUpdateComponent,
 	onDeleteComponent,
 	onDrop,
@@ -116,8 +120,10 @@ const CanvasWorkspace: React.FC<CanvasWorkspaceProps> = ({
 									/>
 									{renderComponent(
 										component,
+										components.indexOf(component),
 										selectedComponent,
 										onSelectComponent,
+										onOpenSettings,
 										onUpdateComponent,
 										onDeleteComponent,
 									)}
@@ -488,8 +494,10 @@ const renderDivider = (_component: SurveyComponent) => (
 
 const renderComponent = (
 	component: SurveyComponent,
+	index: number,
 	selectedComponent: SurveyComponent | null,
 	onSelectComponent: (component: SurveyComponent) => void,
+	onOpenSettings: (component: SurveyComponent) => void,
 	onUpdateComponent: (id: string, updates: Partial<SurveyComponent>) => void,
 	onDeleteComponent: (id: string) => void,
 ): React.ReactNode => {
@@ -503,7 +511,6 @@ const renderComponent = (
 		switch (component?.type) {
 			case 'text-input':
 			case 'email':
-			case 'phone':
 			case 'number':
 				return (
 					<input
@@ -516,6 +523,18 @@ const renderComponent = (
 						disabled
 						className='w-full px-3 lg:px-4 py-2 lg:py-2.5 bg-muted border border-border rounded-lg text-sm text-muted-foreground'
 					/>
+				);
+			case 'phone':
+				return (
+					<div className='relative opacity-70 pointer-events-none'>
+						<PhoneInput
+							country={'in'}
+							containerClass='w-full'
+							inputClass='!w-full !h-10 !bg-muted !border !border-border !rounded-lg !pl-12 !text-sm'
+							buttonClass='!bg-transparent !border-none !rounded-l-lg'
+							placeholder={component.placeholder || 'Answer will appear here'}
+						/>
+					</div>
 				);
 
 			case 'textarea':
@@ -707,11 +726,22 @@ const renderComponent = (
 		<div
 			key={component?.id}
 			onClick={() => onSelectComponent(component)}
+			draggable={true}
+			onDragStart={(e) => {
+				e.dataTransfer.setData('moveIndex', index.toString());
+			}}
 			className={`
-				relative p-4 lg:p-6 bg-card border-2 rounded-lg transition-smooth cursor-pointer
+				group relative p-4 lg:p-6 bg-card border-2 rounded-lg transition-smooth cursor-pointer
 				${isSelected ? 'border-primary shadow-elevation-3' : 'border-border hover:border-primary/50 hover:shadow-elevation-2'}
 			`}
 		>
+			{/* Drag Handle */}
+			<div className='absolute left-1.5 top-1/2 -translate-y-1/2 opacity-0 group-hover:opacity-100 transition-opacity cursor-grab active:cursor-grabbing text-muted-foreground/40'>
+				<Icon
+					name='GripVertical'
+					size={18}
+				/>
+			</div>
 			{/* Component Header - Only for non-content components */}
 			{!isContentOnly && (
 				<div className='flex items-start justify-between mb-3 lg:mb-4'>
@@ -761,6 +791,19 @@ const renderComponent = (
 						>
 							<Icon
 								name='Asterisk'
+								size={14}
+							/>
+						</button>
+						<button
+							onClick={(e) => {
+								e?.stopPropagation();
+								onOpenSettings(component);
+							}}
+							className='p-1.5 lg:p-2 rounded-lg bg-muted text-muted-foreground hover:text-primary hover:bg-primary/10 transition-smooth'
+							title='Settings'
+						>
+							<Icon
+								name='Settings'
 								size={14}
 							/>
 						</button>
