@@ -1,8 +1,9 @@
-/** @format */
-
-import axios from 'axios';
+import ApiClient from './ApiClient';
+import type { ApiResponse } from './ApiClient';
 
 const API_BASE_URL = `${import.meta.env.VITE_API_URL}/api/response`;
+
+const responseApiClient = new ApiClient(API_BASE_URL);
 
 export interface ResponseComponent {
 	questionId: string;
@@ -15,84 +16,62 @@ export interface SurveyResponseType {
 	components: ResponseComponent[];
 }
 
+/**
+ * responseApi
+ * Core service for survey response management with token-based authentication.
+ */
 const responseApi = {
 	create: async (
 		response: SurveyResponseType,
 	): Promise<ApiResponse<SurveyResponseType>> => {
-		try {
-			const res = await axios.post<{
-				data: SurveyResponseType;
-				status: string;
-			}>(API_BASE_URL, response);
-			return { success: true, error: null, data: res.data.data };
-		} catch (error) {
-			return { success: false, error: getErrorMessage(error), data: null };
-		}
+		const token = localStorage.getItem('USER_TOKEN');
+		return await responseApiClient.post<SurveyResponseType, SurveyResponseType>(
+			'/',
+			response,
+			{
+				headers: { Authorization: `Bearer ${token}` },
+			},
+		);
 	},
+
 	getAll: async (
 		params?: Record<string, string | number | boolean>,
 		queryString?: string,
 	): Promise<ApiResponse<SurveyResponseType[]>> => {
-		try {
-			const response = queryString
-				? await axios.get<{
-						data: SurveyResponseType[];
-						status: string;
-					}>(`${API_BASE_URL}/${queryString}`)
-				: await axios.get<{
-						data: SurveyResponseType[];
-						status: string;
-					}>(API_BASE_URL, {
-						params,
-					});
-			return { success: true, error: null, data: response.data.data };
-		} catch (error) {
-			return { success: false, error: getErrorMessage(error), data: null };
-		}
+		const token = localStorage.getItem('USER_TOKEN');
+		const url = queryString ? `/${queryString}` : '/';
+		return await responseApiClient.get<SurveyResponseType[]>(url, params, {
+			headers: { Authorization: `Bearer ${token}` },
+		});
 	},
 
 	getById: async (id: string): Promise<ApiResponse<SurveyResponseType>> => {
-		try {
-			const response = await axios.get<{
-				data: SurveyResponseType;
-				status: string;
-			}>(`${API_BASE_URL}/${id}`);
-			return { success: true, error: null, data: response.data.data };
-		} catch (error) {
-			return { success: false, error: getErrorMessage(error), data: null };
-		}
+		const token = localStorage.getItem('USER_TOKEN');
+		return await responseApiClient.get<SurveyResponseType>(`/${id}`, undefined, {
+			headers: { Authorization: `Bearer ${token}` },
+		});
 	},
 
 	update: async (
 		id: string,
 		response: SurveyResponseType,
 	): Promise<ApiResponse<SurveyResponseType>> => {
-		try {
-			const res = await axios.patch<{
-				data: SurveyResponseType;
-				status: string;
-			}>(`${API_BASE_URL}/${id}`, response);
-			return { success: true, error: null, data: res.data.data };
-		} catch (error) {
-			return { success: false, error: getErrorMessage(error), data: null };
-		}
+		const token = localStorage.getItem('USER_TOKEN');
+		return await responseApiClient.patch<
+			SurveyResponseType,
+			SurveyResponseType
+		>(`/${id}`, response, {
+			headers: { Authorization: `Bearer ${token}` },
+		});
 	},
 
 	delete: async (id: string): Promise<ApiResponse<void>> => {
-		try {
-			await axios.delete(`${API_BASE_URL}/${id}`);
-			return { success: true, error: null, data: null };
-		} catch (error) {
-			return { success: false, error: getErrorMessage(error), data: null };
-		}
+		const token = localStorage.getItem('USER_TOKEN');
+		return await responseApiClient.delete(`/${id}`, {
+			headers: { Authorization: `Bearer ${token}` },
+		});
 	},
 };
 
-const getErrorMessage = (error: unknown): string => {
-	if (axios.isAxiosError(error)) {
-		return error.response?.data?.message || error.message;
-	}
-	return error instanceof Error ? error.message : 'An unknown error occurred';
-};
-
+export { responseApiClient };
 export default responseApi;

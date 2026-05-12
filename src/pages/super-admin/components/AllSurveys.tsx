@@ -13,9 +13,30 @@ import { useQuery } from '@tanstack/react-query';
 import { surveyApiClient } from '@/utils/survey.feature';
 import { Badge } from '@/components/ui/badge';
 import { Button } from '@/components/ui/button';
-import { Eye, BarChart3, Search, Edit, ChevronLeft, ChevronRight } from 'lucide-react';
+import { Eye, BarChart3, Search, Edit, ChevronLeft, ChevronRight, Settings, Lock, Globe } from 'lucide-react';
 import { useNavigate } from 'react-router-dom';
 import { Input } from '@/components/ui/input';
+import {
+	Dialog,
+	DialogContent,
+	DialogHeader,
+	DialogTitle,
+	DialogDescription,
+	DialogFooter,
+} from '@/components/ui/dialog';
+import { Switch } from '@/components/ui/switch';
+import { Label } from '@/components/ui/label';
+import {
+	Select,
+	SelectContent,
+	SelectItem,
+	SelectTrigger,
+	SelectValue,
+} from '@/components/ui/select2';
+import { useMutation, useQueryClient } from '@tanstack/react-query';
+import surveyApi from '@/utils/survey.feature';
+import { toast } from 'sonner';
+import { SurveySettingsDialog } from '@/pages/profile/components/SurveySettingDialog';
 
 /**
  * AllSurveys Component
@@ -27,11 +48,44 @@ const AllSurveys: React.FC = () => {
 	const [searchTerm, setSearchTerm] = useState('');
 	const [statusFilter, setStatusFilter] = useState('all');
 	const [currentPage, setCurrentPage] = useState(1);
+	const [selectedSurvey, setSelectedSurvey] = useState<any>(null);
+	const [isSettingsOpen, setIsSettingsOpen] = useState(false);
 	const itemsPerPage = 5;
+	const queryClient = useQueryClient();
+
+	const updateMutation = useMutation({
+		mutationFn: ({ id, data }: { id: string; data: any }) =>
+			surveyApi.update(id, data),
+		onSuccess: () => {
+			queryClient.invalidateQueries({ queryKey: ['all_surveys_admin'] });
+			toast.success('Survey settings updated');
+			setIsSettingsOpen(false);
+		},
+		onError: (error: any) => {
+			toast.error(error.message || 'Failed to update settings');
+		},
+	});
+
+	const handleUpdateSettings = async (id: string, updates: any) => {
+		return updateMutation.mutateAsync({ id, data: updates });
+	};
+
+	const handleAuthToggle = async (surveyId: string, authEnabled: boolean) => {
+		return handleUpdateSettings(surveyId, { authRequired: authEnabled });
+	};
+
+	const handleStatusChange = async (surveyId: string, newStatus: string) => {
+		return handleUpdateSettings(surveyId, { status: newStatus });
+	};
 
 	const { data: surveysData, isLoading } = useQuery({
 		queryKey: ['all_surveys_admin'],
-		queryFn: () => surveyApiClient.get<any>('/'),
+		queryFn: () => {
+			const token = localStorage.getItem('USER_TOKEN');
+			return surveyApiClient.get<any>('/', undefined, {
+				headers: { Authorization: `Bearer ${token}` },
+			});
+		},
 	});
 
 	const surveys = surveysData?.data?.data || [];
@@ -189,6 +243,21 @@ const AllSurveys: React.FC = () => {
 											>
 												<BarChart3 className='h-4 w-4' />
 											</Button>
+											<SurveySettingsDialog
+												survey={sur}
+												open={isSettingsOpen && selectedSurvey?._id === sur._id}
+												onOpenChange={(open) => {
+													if (open) {
+														setSelectedSurvey(sur);
+														setIsSettingsOpen(true);
+													} else {
+														setIsSettingsOpen(false);
+														setSelectedSurvey(null);
+													}
+												}}
+												onAuthToggle={handleAuthToggle}
+												onStatusChange={handleStatusChange}
+											/>
 											<Button
 												variant='ghost'
 												size='icon'
@@ -208,6 +277,8 @@ const AllSurveys: React.FC = () => {
 					</TableBody>
 				</Table>
 			</div>
+
+
 
 			{/* Pagination for Surveys */}
 			{filteredSurveys.length > itemsPerPage && (

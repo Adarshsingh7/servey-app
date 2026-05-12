@@ -36,6 +36,7 @@ export const useUpdateSurvey = () => {
 			),
 		onSuccess: () => {
 			queryClient.invalidateQueries({ queryKey: ['survey'] });
+			queryClient.invalidateQueries({ queryKey: ['all_surveys_admin'] });
 			toast.success('Survey Updated successfully');
 		},
 		onError: (err) => {
@@ -64,6 +65,7 @@ export const useDeleteSurveyById = () => {
 		onSuccess: () => {
 			toast.success('Survey Deleted Successfully');
 			queryClient.invalidateQueries({ queryKey: ['survey'] });
+			queryClient.invalidateQueries({ queryKey: ['all_surveys_admin'] });
 		},
 		onError: () => toast.error('failed to delete survey'),
 	});

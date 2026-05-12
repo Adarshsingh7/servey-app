@@ -812,6 +812,9 @@ const UserManagement: React.FC = () => {
 								</Label>
 								<Select
 									value={isEditDialogOpen.role}
+									disabled={
+										String(isEditDialogOpen._id) === String(currentUser?._id)
+									}
 									onChange={(val) =>
 										setIsEditDialogOpen({
 											...isEditDialogOpen,

@@ -9,6 +9,7 @@ const FloatingToolbar = ({
 	canUndo,
 	canRedo,
 	onTheme,
+	onOpenSettings,
 	isSaving,
 }) => {
 	const [showThemePanel, setShowThemePanel] = useState(false);
@@ -80,6 +81,19 @@ const FloatingToolbar = ({
 				>
 					<Icon
 						name='Palette'
+						size={20}
+					/>
+				</Button>
+				<div className='h-px bg-border' />
+				<Button
+					variant='ghost'
+					size='icon'
+					onClick={onOpenSettings}
+					title='Survey Settings'
+					className='text-muted-foreground hover:text-primary hover:bg-primary/10 transition-all'
+				>
+					<Icon
+						name='Settings'
 						size={20}
 					/>
 				</Button>

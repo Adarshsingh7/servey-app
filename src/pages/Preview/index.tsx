@@ -911,7 +911,7 @@ export const Preview = ({ surveyParam }: { surveyParam?: SurveyType }) => {
 			components,
 		});
 		if (error) {
-			toast.error(error);
+			toast.error(error.message || 'Failed to submit response');
 			navigate('failure');
 		}
 		if (success && data) {

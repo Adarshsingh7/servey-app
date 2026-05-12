@@ -74,11 +74,11 @@ const SurveyBuilder = () => {
 			console.log(err);
 			toast.error('Server Unreachable please check the logs');
 		},
-		onSuccess: (data) => {
-			if (data.error) toast.error(data.error);
+		onSuccess: (data: any) => {
+			if (data.error) toast.error(data.error.message || 'Error saving survey');
 			if (!data.data) return;
 			toast.success('Survey Drafted Successfully');
-			setSurvey(data.data);
+			setSurvey(data.data.data);
 			setIsDirty(false);
 			if (isSavingAndExiting) {
 				navigate('/profile');
@@ -96,16 +96,16 @@ const SurveyBuilder = () => {
 			console.log(err);
 			toast.error('Server Unreachable please check the logs');
 		},
-		onSuccess: (data) => {
-			if (data.error) toast.error(data.error);
+		onSuccess: (data: any) => {
+			if (data.error) toast.error(data.error.message || 'Error creating survey');
 			if (!data.data) return;
 			toast.success('Survey Drafted Successfully');
-			setSurvey(data.data);
+			setSurvey(data.data.data);
 			setIsDirty(false);
 			if (isSavingAndExiting) {
 				navigate('/profile');
 			} else {
-				navigate(`/edit/${data?.data?._id}`);
+				navigate(`/edit/${data?.data?.data?._id}`);
 			}
 		},
 		onSettled: () => {
@@ -579,6 +579,7 @@ const SurveyBuilder = () => {
 				onUndo={handleUndo}
 				onRedo={handleRedo}
 				onTheme={handleTheme}
+				onOpenSettings={() => setShowSettingsDialog(true)}
 				canUndo={historyIndex > 0}
 				canRedo={historyIndex < history?.length - 1}
 				isSaving={isSaving}
