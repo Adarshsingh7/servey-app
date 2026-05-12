@@ -163,8 +163,10 @@ const AuthComponent: React.FC = () => {
 	};
 
 	useEffect(() => {
-		if (authUser?.user) navigate('/profile');
-		else localStorage.removeItem('USER_TOKEN');
+		if (authUser?.user) {
+			if (authUser.user.role === 'superadmin') navigate('/superadmin');
+			else navigate('/profile');
+		} else localStorage.removeItem('USER_TOKEN');
 	}, [authUser, navigate]);
 
 	useEffect(() => {

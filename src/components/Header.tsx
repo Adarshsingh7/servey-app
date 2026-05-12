@@ -61,6 +61,16 @@ function Header() {
 						>
 							{user.role}
 						</Badge>
+						{user.role === 'superadmin' && (
+							<Button
+								variant='outline'
+								size='sm'
+								onClick={() => navigate('/superadmin')}
+								className='text-primary border-primary/20 hover:bg-primary/10'
+							>
+								Super Admin
+							</Button>
+						)}
 						<Button
 							variant='ghost'
 							size='sm'

@@ -59,7 +59,7 @@ interface UserType {
 	name: string;
 	email: string;
 	photo: string;
-	role: 'teacher' | 'student';
+	role: 'teacher' | 'student' | 'superadmin';
 	password: string;
 	isActive: boolean;
 	_id?: string;

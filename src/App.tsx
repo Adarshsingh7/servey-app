@@ -1,5 +1,6 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import SurveyBuilder from './pages/survey-builder';
+import SuperAdmin from './pages/super-admin';
 import { useEffect, useMemo, useState } from 'react';
 import Preview from './pages/Preview';
 import { Toaster } from '@/components/ui/sonner';
@@ -81,6 +82,14 @@ const router = createBrowserRouter([
 				element: (
 					<AuthWrapper>
 						<Profile />
+					</AuthWrapper>
+				),
+			},
+			{
+				path: 'superadmin/:tab?',
+				element: (
+					<AuthWrapper>
+						<SuperAdmin />
 					</AuthWrapper>
 				),
 			},

@@ -26,6 +26,9 @@ import { AlertCircle } from 'lucide-react';
 import Header from '@/components/Header';
 import { htmlToText } from '@/utils/htmlToText';
 import { isNonMeaningful } from '@/utils/sanitize';
+import { Settings, Shield } from 'lucide-react';
+import { Switch } from '@/components/ui/switch';
+import { Label as UILabel } from '@/components/ui/label';
 
 const initSurvey: SurveyType = {
 	components: [],
@@ -58,6 +61,7 @@ const SurveyBuilder = () => {
 	const [isDirty, setIsDirty] = useState(false);
 	const [showUnsavedDialog, setShowUnsavedDialog] = useState(false);
 	const [isSavingAndExiting, setIsSavingAndExiting] = useState(false);
+	const [showSettingsDialog, setShowSettingsDialog] = useState(false);
 
 	const { id } = useParams<{ id: string }>();
 
@@ -345,6 +349,15 @@ const SurveyBuilder = () => {
 								Save Draft
 							</Button>
 							<Button
+								variant='outline'
+								size='sm'
+								onClick={() => setShowSettingsDialog(true)}
+								className='flex-1 lg:flex-none gap-2'
+							>
+								<Settings className='h-4 w-4' />
+								Settings
+							</Button>
+							<Button
 								variant='default'
 								size='sm'
 								onClick={() => {
@@ -397,6 +410,81 @@ const SurveyBuilder = () => {
 							className='w-full sm:w-auto bg-primary hover:bg-primary/90'
 						>
 							{isSaving ? 'Saving...' : 'Save Draft & Exit'}
+						</Button>
+					</DialogFooter>
+				</DialogContent>
+			</Dialog>
+
+			{/* Survey Settings Dialog */}
+			<Dialog
+				open={showSettingsDialog}
+				onOpenChange={setShowSettingsDialog}
+			>
+				<DialogContent className='max-w-md'>
+					<DialogHeader>
+						<div className='flex items-center gap-2 mb-1'>
+							<Settings className='w-5 h-5 text-primary' />
+							<DialogTitle>Survey Settings</DialogTitle>
+						</div>
+						<DialogDescription>
+							Configure global settings and access control for this survey.
+						</DialogDescription>
+					</DialogHeader>
+
+					<div className='space-y-6 py-4'>
+						{/* Auth Requirement */}
+						<div className='flex items-center justify-between gap-4 p-4 rounded-lg border border-border bg-muted/30'>
+							<div className='space-y-0.5'>
+								<div className='flex items-center gap-2'>
+									<Shield className='h-4 w-4 text-primary' />
+									<UILabel className='text-sm font-semibold'>
+										Authentication Required
+									</UILabel>
+								</div>
+								<p className='text-xs text-muted-foreground'>
+									Respondents must be logged in to take this survey.
+								</p>
+							</div>
+							<Switch
+								checked={survey.authRequired}
+								onCheckedChange={(checked) => {
+									setSurvey((curr) => ({ ...curr, authRequired: checked }));
+									setIsDirty(true);
+								}}
+							/>
+						</div>
+
+						{/* Status Control */}
+						<div className='space-y-3'>
+							<UILabel className='text-xs font-bold uppercase tracking-wider text-muted-foreground'>
+								Survey Status
+							</UILabel>
+							<div className='grid grid-cols-3 gap-2'>
+								{['drafted', 'live', 'completed'].map((status) => (
+									<Button
+										key={status}
+										variant={survey.status === status ? 'default' : 'outline'}
+										size='sm'
+										onClick={() => {
+											setSurvey((curr) => ({ ...curr, status: status as any }));
+											setIsDirty(true);
+										}}
+										className='capitalize text-xs'
+									>
+										{status}
+									</Button>
+								))}
+							</div>
+						</div>
+					</div>
+
+					<DialogFooter>
+						<Button
+							variant='default'
+							onClick={() => setShowSettingsDialog(false)}
+							className='w-full'
+						>
+							Done
 						</Button>
 					</DialogFooter>
 				</DialogContent>
