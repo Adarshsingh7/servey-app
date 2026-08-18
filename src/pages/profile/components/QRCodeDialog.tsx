@@ -10,6 +10,7 @@ import {
 import QRCode from 'react-qr-code';
 import { Check, Copy } from 'lucide-react'; // Standard icons
 import { Button } from '@/components/ui/button';
+import { getSurveyPreviewUrl } from '@/utils/frontendUrl';
 
 interface QRCodeDialogProps {
 	responseId: string | null;
@@ -23,7 +24,7 @@ export default function QRCodeDialog({
 	const [copied, setCopied] = React.useState(false);
 	const isOpen = Boolean(responseId);
 
-	const previewUrl = `${import.meta.env.VITE_FRONTEND_URL}/preview/${responseId}`;
+	const previewUrl = getSurveyPreviewUrl(responseId);
 
 	const handleCopy = async () => {
 		if (!previewUrl) return;

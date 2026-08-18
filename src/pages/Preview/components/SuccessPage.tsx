@@ -2,16 +2,14 @@ import { useState } from 'react';
 import { Check, LogOut, Share2, RotateCcw, CopyCheck } from 'lucide-react';
 import { useParams } from 'react-router-dom';
 import { toast } from 'sonner';
+import { getSurveyPreviewUrl } from '@/utils/frontendUrl';
 
 export default function SuccessPage() {
 	const { id } = useParams();
 	const [copied, setCopied] = useState(false);
 
 	const getSurveyLink = () => {
-		const baseUrl =
-			import.meta.env.VITE_FRONTEND_URL?.replace(/\/$/, '') ||
-			window.location.origin;
-		return `${baseUrl}/preview/${id}`;
+		return getSurveyPreviewUrl(id);
 	};
 
 	// Modern Share Functionality
