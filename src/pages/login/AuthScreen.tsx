@@ -51,6 +51,15 @@ const AuthComponent: React.FC = () => {
 		email: '',
 		password: '',
 	});
+	const navigate = useNavigate();
+	const [searchParams] = useSearchParams();
+
+	// Pre-select the tab based on ?intent= from the landing page demo CTA
+	const intentTab = useMemo(() => {
+		const intent = searchParams.get('intent');
+		return (intent === 'signup' ? 'signup' : 'signin') as 'signin' | 'signup';
+	}, [searchParams]);
+
 	const [showPassword, setShowPassword] = useState(false);
 	const [showConfirmPassword, setShowConfirmPassword] = useState(false);
 	const [activeTab, setActiveTab] = useState<'signin' | 'signup'>(intentTab);
@@ -60,15 +69,6 @@ const AuthComponent: React.FC = () => {
 	const googleInitializedRef = useRef(false);
 	const activeTabRef = useRef<'signin' | 'signup'>('signin');
 	const signUpRoleRef = useRef<SignUpFormData['role']>('student');
-
-	const navigate = useNavigate();
-	const [searchParams] = useSearchParams();
-
-	// Pre-select the tab based on ?intent= from the landing page demo CTA
-	const intentTab = useMemo(() => {
-		const intent = searchParams.get('intent');
-		return intent === 'signup' ? 'signup' : 'signin';
-	}, [searchParams]);
 
 	const { data: authUser } = useQuery(userQueryAuth());
 
