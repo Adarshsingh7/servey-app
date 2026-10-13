@@ -10,7 +10,6 @@ import {
 	Users,
 	Zap,
 	ChevronRight,
-	Check,
 	Star,
 	PenLine,
 	Share2,
@@ -584,122 +583,6 @@ export default function LandingPage() {
 				</div>
 			</section>
 
-			{/* ── Pricing teaser ── */}
-			<section className='py-24 md:py-32'>
-				<div className='max-w-7xl mx-auto px-6'>
-					<motion.div
-						initial={{ opacity: 0, y: 20 }}
-						whileInView={{ opacity: 1, y: 0 }}
-						viewport={{ once: true }}
-						className='text-center mb-14'
-					>
-						<p className='text-xs uppercase tracking-widest font-semibold text-primary mb-3'>
-							Pricing
-						</p>
-						<h2 className='text-4xl md:text-5xl font-black tracking-tight text-foreground mb-4'>
-							One tool. Two speeds.
-						</h2>
-						<p className='text-muted-foreground text-lg max-w-md mx-auto'>
-							Start free. Upgrade when your surveys grow.
-						</p>
-					</motion.div>
-
-					<div className='grid md:grid-cols-2 gap-6 max-w-3xl mx-auto'>
-						{/* Free */}
-						<motion.div
-							initial={{ opacity: 0, x: -20 }}
-							whileInView={{ opacity: 1, x: 0 }}
-							viewport={{ once: true }}
-							className='rounded-2xl border border-border bg-card p-8 flex flex-col'
-						>
-							<div className='mb-6'>
-								<p className='text-xs uppercase tracking-widest font-semibold text-muted-foreground mb-2'>
-									Free
-								</p>
-								<div className='flex items-baseline gap-1'>
-									<span className='text-5xl font-black text-foreground'>₹0</span>
-									<span className='text-sm text-muted-foreground'>forever</span>
-								</div>
-							</div>
-							<ul className='space-y-3 mb-8 flex-1'>
-								{[
-									'3 active surveys',
-									'50 responses per survey',
-									'5 components per survey',
-									'Basic analytics',
-									'Survey preview & sharing',
-								].map((f) => (
-									<li
-										key={f}
-										className='flex items-center gap-3 text-sm'
-									>
-										<Check className='w-4 h-4 text-foreground/40 shrink-0' />
-										<span>{f}</span>
-									</li>
-								))}
-							</ul>
-							<Link
-								to='/auth'
-								className='block text-center text-sm font-medium border border-border rounded-xl py-2.5 hover:bg-accent transition-colors'
-							>
-								Get started free
-							</Link>
-						</motion.div>
-
-						{/* Premium */}
-						<motion.div
-							initial={{ opacity: 0, x: 20 }}
-							whileInView={{ opacity: 1, x: 0 }}
-							viewport={{ once: true }}
-							className='rounded-2xl bg-primary p-8 flex flex-col relative overflow-hidden'
-						>
-							<div className='absolute -top-20 -right-20 w-64 h-64 rounded-full border border-primary-foreground/10' />
-							<div className='absolute -top-8 -right-8 w-40 h-40 rounded-full border border-primary-foreground/10' />
-							<div className='mb-6 relative'>
-								<div className='flex items-center gap-2 mb-2'>
-									<p className='text-xs uppercase tracking-widest font-semibold text-primary-foreground/70'>
-										Premium
-									</p>
-									<span className='text-[10px] font-bold bg-primary-foreground/15 text-primary-foreground/80 px-2 py-0.5 rounded-full uppercase tracking-wide'>
-										Popular
-									</span>
-								</div>
-								<div className='flex items-baseline gap-1'>
-									<span className='text-5xl font-black text-primary-foreground'>
-										₹499
-									</span>
-									<span className='text-sm text-primary-foreground/60'>/ month</span>
-								</div>
-							</div>
-							<ul className='space-y-3 mb-8 flex-1 relative'>
-								{[
-									'Unlimited surveys',
-									'Unlimited responses',
-									'Advanced analytics',
-									'CSV & JSON export',
-									'Authentication gate',
-									'Up to 10 team members',
-									'Priority support',
-								].map((f) => (
-									<li
-										key={f}
-										className='flex items-center gap-3 text-sm'
-									>
-										<Check className='w-4 h-4 text-primary-foreground/70 shrink-0' />
-										<span className='text-primary-foreground'>{f}</span>
-									</li>
-								))}
-							</ul>
-							<Link
-								to='/pricing-info'
-								className='relative block text-center text-sm font-semibold bg-primary-foreground text-primary rounded-xl py-2.5 hover:bg-primary-foreground/90 transition-colors'
-							>
-								View full pricing
-							</Link>
-						</motion.div>
-					</div>
-				</div>
-			</section>
 
 			{/* ── Testimonials ── */}
 			<section className='py-24 md:py-32 bg-muted/20 border-y border-border'>

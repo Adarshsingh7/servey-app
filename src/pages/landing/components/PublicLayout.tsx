@@ -5,7 +5,6 @@ import { Menu, X, BarChart3 } from 'lucide-react';
 const navLinks = [
 	{ label: 'Features', href: '/#features' },
 	{ label: 'How It Works', href: '/#how-it-works' },
-	{ label: 'Pricing', href: '/pricing-info' },
 	{ label: 'About', href: '/about' },
 	{ label: 'Contact', href: '/contact' },
 ];
@@ -138,7 +137,6 @@ export function PublicFooter() {
 						<div className='flex flex-col gap-2'>
 							{[
 								{ label: 'Features', href: '/#features' },
-								{ label: 'Pricing', href: '/pricing-info' },
 								{ label: 'How It Works', href: '/#how-it-works' },
 							].map((l) => (
 								<Link
@@ -180,7 +178,6 @@ export function PublicFooter() {
 							{[
 								{ label: 'Create account', href: '/auth' },
 								{ label: 'Sign in', href: '/auth' },
-								{ label: 'View pricing', href: '/pricing-info' },
 							].map((l) => (
 								<Link
 									key={l.label}
