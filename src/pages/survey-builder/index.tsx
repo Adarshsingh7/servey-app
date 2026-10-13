@@ -8,6 +8,7 @@ import { Button } from '../../components/ui/button';
 import Preview from '../Preview';
 import TestModePreviewWrapper from '../Preview/TestModePreviewWrapper';
 import surveyApi from '@/utils/survey.feature';
+import { loadPendingSurvey, clearPendingSurvey } from '@/utils/pendingSurvey';
 import { toast } from 'sonner';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 import { useGetSurveyBySurveyId } from '@/queries/survey.query';
@@ -303,6 +304,19 @@ const SurveyBuilder = () => {
 		if (!id || !currentSurvey?.data?.data) return;
 		setSurvey(currentSurvey.data.data);
 	}, [currentSurvey?.data?.data, id]);
+
+	// Restore a draft built on the landing page demo before the user logged in
+	useEffect(() => {
+		if (id) return; // editing existing survey — don't overwrite
+		const pending = loadPendingSurvey();
+		if (!pending) return;
+		clearPendingSurvey();
+		setSurvey(pending);
+		setHistory([pending.components]);
+		setHistoryIndex(0);
+		setIsDirty(true);
+		toast.success('Your survey draft has been restored!');
+	}, []); // run once on mount
 
 	if (!survey) return null;
 

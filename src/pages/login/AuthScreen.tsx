@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from 'react';
+import React, { useEffect, useRef, useState, useMemo } from 'react';
 import { Button } from '@/components/ui/button';
 import { Input } from '@/components/ui/input';
 import { Label } from '@/components/ui/label';
@@ -15,11 +15,12 @@ import { Mail, Lock, User, Phone, Building2, Eye, EyeOff } from 'lucide-react';
 import { useQuery, useQueryClient } from '@tanstack/react-query';
 import { userQueryAuth } from '@/queries/auth.query';
 import { googleAuth, login, signup } from '@/utils/user.feature';
-import { useNavigate } from 'react-router-dom';
+import { useNavigate, useSearchParams } from 'react-router-dom';
 import { toast } from 'sonner';
 import PhoneInput from 'react-phone-input-2';
 import { isValidPhoneNumber } from 'libphonenumber-js';
 import { isNonMeaningful } from '@/utils/sanitize';
+import { hasPendingSurvey } from '@/utils/pendingSurvey';
 import 'react-phone-input-2/lib/style.css';
 
 interface SignUpFormData {
@@ -52,7 +53,7 @@ const AuthComponent: React.FC = () => {
 	});
 	const [showPassword, setShowPassword] = useState(false);
 	const [showConfirmPassword, setShowConfirmPassword] = useState(false);
-	const [activeTab, setActiveTab] = useState<'signin' | 'signup'>('signin');
+	const [activeTab, setActiveTab] = useState<'signin' | 'signup'>(intentTab);
 	const [signupErrors, setSignupErrors] = useState<Partial<Record<keyof SignUpFormData, string>>>({});
 	const signInGoogleRef = useRef<HTMLDivElement | null>(null);
 	const signUpGoogleRef = useRef<HTMLDivElement | null>(null);
@@ -61,6 +62,13 @@ const AuthComponent: React.FC = () => {
 	const signUpRoleRef = useRef<SignUpFormData['role']>('student');
 
 	const navigate = useNavigate();
+	const [searchParams] = useSearchParams();
+
+	// Pre-select the tab based on ?intent= from the landing page demo CTA
+	const intentTab = useMemo(() => {
+		const intent = searchParams.get('intent');
+		return intent === 'signup' ? 'signup' : 'signin';
+	}, [searchParams]);
 
 	const { data: authUser } = useQuery(userQueryAuth());
 
@@ -164,9 +172,17 @@ const AuthComponent: React.FC = () => {
 
 	useEffect(() => {
 		if (authUser?.user) {
-			if (authUser.user.role === 'superadmin') navigate('/superadmin');
-			else navigate('/profile');
-		} else localStorage.removeItem('USER_TOKEN');
+			if (authUser.user.role === 'superadmin') {
+				navigate('/superadmin');
+			} else if (hasPendingSurvey()) {
+				// User came from the landing-page demo — restore their draft
+				navigate('/create');
+			} else {
+				navigate('/profile');
+			}
+		} else {
+			localStorage.removeItem('USER_TOKEN');
+		}
 	}, [authUser, navigate]);
 
 	useEffect(() => {
@@ -253,8 +269,16 @@ const AuthComponent: React.FC = () => {
 		document.head.appendChild(script);
 	}, [activeTab, signUpData.role]);
 
+	const isRestoringDraft = searchParams.get('restore') === '1' && hasPendingSurvey();
+
 	return (
 		<div className='min-h-screen flex items-center justify-center bg-background p-4'>
+			{isRestoringDraft && (
+				<div className='fixed top-4 left-1/2 -translate-x-1/2 z-50 flex items-center gap-2 bg-primary text-primary-foreground text-sm font-medium px-4 py-2.5 rounded-xl shadow-lg'>
+					<span className='w-2 h-2 rounded-full bg-primary-foreground animate-pulse' />
+					Your survey draft is saved — sign in or sign up to restore it
+				</div>
+			)}
 			<Card className='w-full max-w-md shadow-lg'>
 				<CardHeader className='space-y-1 pb-6'>
 					<CardTitle className='text-3xl font-bold text-center text-primary'>

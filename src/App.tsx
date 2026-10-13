@@ -1,7 +1,7 @@
 import { createBrowserRouter, RouterProvider } from 'react-router-dom';
 import SurveyBuilder from './pages/survey-builder';
 import SuperAdmin from './pages/super-admin';
-import { useEffect, useMemo, useState } from 'react';
+import { useMemo } from 'react';
 import Preview from './pages/Preview';
 import { Toaster } from '@/components/ui/sonner';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
@@ -12,6 +12,10 @@ import Profile from './pages/profile';
 import AuthWrapper from './components/AuthWrapper';
 import AnalyticsPage from './pages/analytics';
 import PricingPage from './pages/pricing';
+import LandingPage from './pages/landing';
+import AboutPage from './pages/about';
+import ContactPage from './pages/contact';
+import PricingInfoPage from './pages/pricing-info';
 import { ThemeProvider } from '@/context/theme.context';
 // import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
@@ -22,16 +26,24 @@ const router = createBrowserRouter([
 		path: '/',
 		children: [
 			{
-				path: '/auth',
-				element: <AuthScreen />,
+				path: '',
+				element: <LandingPage />,
 			},
 			{
-				path: '',
-				element: (
-					<AuthWrapper>
-						<Profile />
-					</AuthWrapper>
-				),
+				path: '/about',
+				element: <AboutPage />,
+			},
+			{
+				path: '/contact',
+				element: <ContactPage />,
+			},
+			{
+				path: '/pricing-info',
+				element: <PricingInfoPage />,
+			},
+			{
+				path: '/auth',
+				element: <AuthScreen />,
 			},
 			{
 				path: '/edit/:id',
