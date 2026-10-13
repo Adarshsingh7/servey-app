@@ -19,7 +19,7 @@ const contactTopics = [
 	{
 		icon: HelpCircle,
 		title: 'General support',
-		desc: 'Questions about using FormLab, troubleshooting, or account help.',
+		desc: 'Questions about using Survey Ifnoss, troubleshooting, or account help.',
 		tag: 'support',
 	},
 	{
@@ -37,14 +37,14 @@ const contactTopics = [
 	{
 		icon: Users,
 		title: 'Partnership',
-		desc: 'Interested in using FormLab across your institution or organization?',
+		desc: 'Interested in using Survey Ifnoss across your institution or organization?',
 		tag: 'partnership',
 	},
 ];
 
 const faqs = [
 	{
-		q: 'Is FormLab really free?',
+		q: 'Is Survey Ifnoss really free?',
 		a: 'Yes — the Free plan is free forever with no trial period. You get 3 surveys, 50 responses each, and core analytics at no cost.',
 	},
 	{
@@ -337,7 +337,7 @@ export default function ContactPage() {
 								<div className='space-y-2'>
 									{[
 										{ label: 'View pricing plans', href: '/pricing-info' },
-										{ label: 'About FormLab', href: '/about' },
+										{ label: 'About Survey Ifnoss', href: '/about' },
 										{ label: 'Create a free account', href: '/auth' },
 									].map((l) => (
 										<Link

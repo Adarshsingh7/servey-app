@@ -1,4 +1,4 @@
-const KEY = 'FORMLAB_PENDING_SURVEY';
+const KEY = 'SURVEY_IFNOSS_PENDING_SURVEY';
 
 export function savePendingSurvey(survey: SurveyType): void {
 	try {

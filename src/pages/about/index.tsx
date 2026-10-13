@@ -27,12 +27,12 @@ const values = [
 	{
 		icon: Lightbulb,
 		title: 'Continuous improvement',
-		desc: 'FormLab ships updates based on real user feedback. When educators ask for something, we build it.',
+		desc: 'Survey Ifnoss ships updates based on real user feedback. When educators ask for something, we build it.',
 	},
 	{
 		icon: Users,
 		title: 'Community-driven',
-		desc: 'Built alongside a community of thousands of educators and researchers who use FormLab daily.',
+		desc: 'Built alongside a community of thousands of educators and researchers who use Survey Ifnoss daily.',
 	},
 ];
 
@@ -47,18 +47,18 @@ const team = [
 		name: 'Product Team',
 		role: 'Design & Development',
 		initials: 'PT',
-		bio: 'A small, focused team building FormLab with care — choosing quality over speed at every step.',
+		bio: 'A small, focused team building Survey Ifnoss with care — choosing quality over speed at every step.',
 	},
 	{
 		name: 'Our Users',
 		role: 'The real co-creators',
 		initials: 'U',
-		bio: 'Every feature in FormLab was shaped by feedback from educators, students, and teams who use it every week.',
+		bio: 'Every feature in Survey Ifnoss was shaped by feedback from educators, students, and teams who use it every week.',
 	},
 ];
 
 const milestones = [
-	{ year: '2024', event: 'FormLab launched with core survey builder' },
+	{ year: '2024', event: 'Survey Ifnoss launched with core survey builder' },
 	{ year: '2024', event: 'Added real-time analytics and QR code sharing' },
 	{ year: '2025', event: 'Premium plan launched with team collaboration' },
 	{ year: '2025', event: 'IFNOSS institutional integration rolled out' },
@@ -89,7 +89,7 @@ export default function AboutPage() {
 						className='max-w-2xl'
 					>
 						<p className='text-xs uppercase tracking-widest font-semibold text-primary mb-4'>
-							About FormLab
+							About Survey Ifnoss
 						</p>
 						<h1 className='text-5xl md:text-7xl font-black tracking-tight leading-[1.02] text-foreground mb-6'>
 							We build tools
@@ -97,7 +97,7 @@ export default function AboutPage() {
 							educators love.
 						</h1>
 						<p className='text-xl text-muted-foreground leading-relaxed'>
-							FormLab started as a side project by developers who were frustrated with
+							Survey Ifnoss started as a side project by developers who were frustrated with
 							bloated survey tools. We wanted something clean, fast, and actually free
 							— so we built it.
 						</p>
@@ -128,7 +128,7 @@ export default function AboutPage() {
 								be straightforward: build, share, analyze. That's it.
 							</p>
 							<p className='text-muted-foreground leading-relaxed'>
-								FormLab is built specifically for classrooms, institutions, and teams
+								Survey Ifnoss is built specifically for classrooms, institutions, and teams
 								that need reliable data collection without an enterprise budget or a
 								computer science degree.
 							</p>

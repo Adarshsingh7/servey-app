@@ -80,13 +80,13 @@ const testimonials = [
 	{
 		name: 'Priya Mehta',
 		role: 'Teacher, Delhi',
-		text: 'I use FormLab every week for quick quizzes. The QR code feature means my students can start in seconds — no login needed.',
+		text: 'I use Survey Ifnoss every week for quick quizzes. The QR code feature means my students can start in seconds — no login needed.',
 		rating: 5,
 	},
 	{
 		name: 'Rohan Sharma',
 		role: 'Student, IIT Bombay',
-		text: 'We ran our entire college fest feedback through FormLab. Analytics were surprisingly powerful for a free tier.',
+		text: 'We ran our entire college fest feedback through Survey Ifnoss. Analytics were surprisingly powerful for a free tier.',
 		rating: 5,
 	},
 	{
@@ -277,7 +277,7 @@ export default function LandingPage() {
 									<div className='flex-1 mx-3'>
 										<div className='bg-background/70 border border-border rounded-md px-3 py-1 text-[11px] text-muted-foreground flex items-center gap-2 w-56'>
 											<div className='w-1.5 h-1.5 rounded-full bg-green-400 shrink-0' />
-											formlab.app/create
+											survey-ifnoss.app/create
 										</div>
 									</div>
 								</div>
@@ -499,7 +499,7 @@ export default function LandingPage() {
 							Nothing you don't.
 						</h2>
 						<p className='text-muted-foreground text-lg leading-relaxed'>
-							FormLab keeps survey creation simple while giving you professional-grade
+							Survey Ifnoss keeps survey creation simple while giving you professional-grade
 							tools when you need them.
 						</p>
 					</motion.div>

@@ -28,7 +28,7 @@ export function PublicNavbar() {
 						<BarChart3 className='w-4 h-4 text-primary-foreground' />
 					</div>
 					<span className='text-lg font-bold tracking-tight text-foreground'>
-						FormLab
+						Survey Ifnoss
 					</span>
 				</Link>
 
@@ -123,7 +123,7 @@ export function PublicFooter() {
 							<div className='w-8 h-8 rounded-lg bg-primary flex items-center justify-center'>
 								<BarChart3 className='w-4 h-4 text-primary-foreground' />
 							</div>
-							<span className='text-base font-bold text-foreground'>FormLab</span>
+							<span className='text-base font-bold text-foreground'>Survey Ifnoss</span>
 						</Link>
 						<p className='text-sm text-muted-foreground leading-relaxed max-w-xs'>
 							Professional survey builder for educators and teams. Create, share,
@@ -196,7 +196,7 @@ export function PublicFooter() {
 
 				<div className='pt-8 border-t border-border flex flex-col sm:flex-row items-center justify-between gap-4'>
 					<p className='text-xs text-muted-foreground'>
-						© 2025 FormLab. Built for educators and teams.
+						© 2025 Survey Ifnoss. Built for educators and teams.
 					</p>
 					<div className='flex items-center gap-6'>
 						<Link
