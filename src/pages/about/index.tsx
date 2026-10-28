@@ -106,7 +106,10 @@ export default function AboutPage() {
 			</section>
 
 			{/* ── Mission ── */}
-			<section className='py-16 border-y border-border bg-muted/20'>
+			<section
+				id='mission'
+				className='py-16 border-y border-border bg-muted/20'
+			>
 				<div className='max-w-7xl mx-auto px-6'>
 					<div className='grid md:grid-cols-2 gap-12 items-center'>
 						<motion.div
@@ -162,7 +165,10 @@ export default function AboutPage() {
 			</section>
 
 			{/* ── Values ── */}
-			<section className='py-24 md:py-32'>
+			<section
+				id='values'
+				className='py-24 md:py-32'
+			>
 				<div className='max-w-7xl mx-auto px-6'>
 					<motion.div
 						initial={{ opacity: 0, y: 20 }}
@@ -207,7 +213,10 @@ export default function AboutPage() {
 			</section>
 
 			{/* ── Timeline ── */}
-			<section className='py-24 bg-muted/20 border-y border-border'>
+			<section
+				id='story'
+				className='py-24 bg-muted/20 border-y border-border'
+			>
 				<div className='max-w-7xl mx-auto px-6'>
 					<motion.div
 						initial={{ opacity: 0, y: 20 }}
@@ -252,7 +261,10 @@ export default function AboutPage() {
 			</section>
 
 			{/* ── Team ── */}
-			<section className='py-24 md:py-32'>
+			<section
+				id='team'
+				className='py-24 md:py-32'
+			>
 				<div className='max-w-7xl mx-auto px-6'>
 					<motion.div
 						initial={{ opacity: 0, y: 20 }}

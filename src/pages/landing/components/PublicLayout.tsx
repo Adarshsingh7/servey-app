@@ -13,7 +13,13 @@ export function PublicNavbar() {
 	const [open, setOpen] = useState(false);
 	const location = useLocation();
 
-	const isActive = (href: string) => location.pathname === href;
+	// Hash links (`/#features`) are active only while that section is in the URL.
+	const isActive = (href: string) => {
+		const [path, hash] = href.split('#');
+		const pathname = path === '' ? '/' : path;
+		if (location.pathname !== pathname) return false;
+		return hash ? location.hash === `#${hash}` : !location.hash;
+	};
 
 	return (
 		<nav className='fixed top-0 inset-x-0 z-50 bg-background/80 backdrop-blur-md border-b border-border/50'>
@@ -157,6 +163,8 @@ export function PublicFooter() {
 						<div className='flex flex-col gap-2'>
 							{[
 								{ label: 'About', href: '/about' },
+								{ label: 'Our story', href: '/about#story' },
+								{ label: 'Team', href: '/about#team' },
 								{ label: 'Contact', href: '/contact' },
 							].map((l) => (
 								<Link
@@ -197,13 +205,13 @@ export function PublicFooter() {
 					</p>
 					<div className='flex items-center gap-6'>
 						<Link
-							to='/about'
+							to='/contact#faq'
 							className='text-xs text-muted-foreground hover:text-foreground transition-colors'
 						>
 							Privacy
 						</Link>
 						<Link
-							to='/about'
+							to='/contact'
 							className='text-xs text-muted-foreground hover:text-foreground transition-colors'
 						>
 							Terms

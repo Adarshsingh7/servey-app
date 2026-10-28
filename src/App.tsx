@@ -17,6 +17,7 @@ import AboutPage from './pages/about';
 import ContactPage from './pages/contact';
 import PricingInfoPage from './pages/pricing-info';
 import { ThemeProvider } from '@/context/theme.context';
+import RootLayout from './components/RootLayout';
 // import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 const queryClient = new QueryClient();
@@ -24,6 +25,7 @@ const queryClient = new QueryClient();
 const router = createBrowserRouter([
 	{
 		path: '/',
+		element: <RootLayout />,
 		children: [
 			{
 				path: '',
