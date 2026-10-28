@@ -2,10 +2,7 @@ import { useState } from 'react';
 import { motion } from 'framer-motion';
 import { Link } from 'react-router-dom';
 import {
-	Mail,
-	MessageSquare,
 	Building2,
-	Clock,
 	Send,
 	ArrowRight,
 	CheckCircle2,
@@ -287,48 +284,6 @@ export default function ContactPage() {
 							transition={{ delay: 0.3 }}
 							className='space-y-6'
 						>
-							{/* Contact info */}
-							<div className='rounded-2xl border border-border bg-card p-6'>
-								<h3 className='text-base font-bold text-foreground mb-4'>
-									Get in touch
-								</h3>
-								<div className='space-y-4'>
-									<div className='flex items-start gap-3'>
-										<div className='w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 mt-0.5'>
-											<Mail className='w-4 h-4 text-primary' />
-										</div>
-										<div>
-											<p className='text-xs text-muted-foreground'>Email</p>
-											<p className='text-sm font-medium text-foreground select-all'>
-												teambackendcoders@gmail.com
-											</p>
-										</div>
-									</div>
-									<div className='flex items-start gap-3'>
-										<div className='w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 mt-0.5'>
-											<Clock className='w-4 h-4 text-primary' />
-										</div>
-										<div>
-											<p className='text-xs text-muted-foreground'>Response time</p>
-											<p className='text-sm font-medium text-foreground'>
-												Within 1 business day
-											</p>
-										</div>
-									</div>
-									<div className='flex items-start gap-3'>
-										<div className='w-8 h-8 rounded-lg bg-primary/10 flex items-center justify-center shrink-0 mt-0.5'>
-											<MessageSquare className='w-4 h-4 text-primary' />
-										</div>
-										<div>
-											<p className='text-xs text-muted-foreground'>Support hours</p>
-											<p className='text-sm font-medium text-foreground'>
-												Mon – Fri, 9 AM – 6 PM IST
-											</p>
-										</div>
-									</div>
-								</div>
-							</div>
-
 							{/* Quick links */}
 							<div className='rounded-2xl border border-border bg-card p-6'>
 								<h3 className='text-base font-bold text-foreground mb-4'>
