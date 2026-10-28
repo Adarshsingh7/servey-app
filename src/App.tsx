@@ -18,6 +18,8 @@ import ContactPage from './pages/contact';
 import PricingInfoPage from './pages/pricing-info';
 import { ThemeProvider } from '@/context/theme.context';
 import RootLayout from './components/RootLayout';
+import PrivacyPage from './pages/privacy';
+import TermsPage from './pages/terms';
 // import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
 
 const queryClient = new QueryClient();
@@ -38,6 +40,14 @@ const router = createBrowserRouter([
 			{
 				path: '/contact',
 				element: <ContactPage />,
+			},
+			{
+				path: '/privacy',
+				element: <PrivacyPage />,
+			},
+			{
+				path: '/terms',
+				element: <TermsPage />,
 			},
 			{
 				path: '/pricing-info',

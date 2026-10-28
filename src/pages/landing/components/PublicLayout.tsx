@@ -205,13 +205,13 @@ export function PublicFooter() {
 					</p>
 					<div className='flex items-center gap-6'>
 						<Link
-							to='/contact#faq'
+							to='/privacy'
 							className='text-xs text-muted-foreground hover:text-foreground transition-colors'
 						>
 							Privacy
 						</Link>
 						<Link
-							to='/contact'
+							to='/terms'
 							className='text-xs text-muted-foreground hover:text-foreground transition-colors'
 						>
 							Terms
