@@ -285,7 +285,7 @@ export default function ContactPage() {
 							className='space-y-6'
 						>
 							{/* Quick links */}
-							<div className='rounded-2xl border border-border bg-card p-6'>
+							<div className='rounded-2xl bg-primary/10 border border-primary/20 p-6'>
 								<h3 className='text-base font-bold text-foreground mb-4'>
 									Helpful links
 								</h3>
@@ -305,26 +305,6 @@ export default function ContactPage() {
 										</Link>
 									))}
 								</div>
-							</div>
-
-							{/* For institutions */}
-							<div className='rounded-2xl bg-primary/10 border border-primary/20 p-6'>
-								<div className='w-8 h-8 rounded-lg bg-primary/20 flex items-center justify-center mb-3'>
-									<Building2 className='w-4 h-4 text-primary' />
-								</div>
-								<h3 className='text-sm font-bold text-foreground mb-2'>
-									For institutions
-								</h3>
-								<p className='text-xs text-muted-foreground leading-relaxed mb-4'>
-									Schools, colleges, and organizations get volume access, IFNOSS
-									integration, and dedicated support.
-								</p>
-								<button
-									onClick={() => setForm((f) => ({ ...f, topic: 'institutional' }))}
-									className='text-xs font-semibold text-primary hover:underline'
-								>
-									Contact about institutional access →
-								</button>
 							</div>
 						</motion.div>
 					</div>
